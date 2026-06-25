@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/att_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="6dp">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="뒤로" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="근무별 출근 현황"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12/25 (수) · 강남점"
+                android:textColor="@color/text_tertiary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <!-- summary -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_soft_gray"
+                android:padding="14dp"
+                android:baselineAligned="false">
+
+                <LinearLayout style="@style/SummaryCol">
+                    <TextView style="@style/SummaryNum" android:text="3" android:textColor="@color/accent_green" />
+                    <TextView style="@style/SummaryLabel" android:text="출근" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/SummaryCol">
+                    <TextView style="@style/SummaryNum" android:text="1" android:textColor="@color/warn_orange" />
+                    <TextView style="@style/SummaryLabel" android:text="지각" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/SummaryCol">
+                    <TextView style="@style/SummaryNum" android:text="1" android:textColor="@color/accent_red" />
+                    <TextView style="@style/SummaryLabel" android:text="결근" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- rows -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:divider="@drawable/divider_line"
+                android:showDividers="middle"
+                android:padding="4dp">
+
+                <LinearLayout style="@style/MemberRow" android:paddingHorizontal="12dp">
+                    <LinearLayout style="@style/MemberMeta" android:layout_marginStart="0dp">
+                        <TextView style="@style/MemberName" android:text="현우 · 오픈" />
+                        <TextView style="@style/MemberSub" android:text="09:00 출근 (정상)" />
+                    </LinearLayout>
+                    <TextView style="@style/MemberTag" android:text="출근"
+                        android:background="@drawable/bg_badge_approved" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/MemberRow" android:paddingHorizontal="12dp">
+                    <LinearLayout style="@style/MemberMeta" android:layout_marginStart="0dp">
+                        <TextView style="@style/MemberName" android:text="민지 · 홀" />
+                        <TextView style="@style/MemberSub" android:text="14:12 출근 (12분 지각)" />
+                    </LinearLayout>
+                    <TextView style="@style/MemberTag" android:text="지각"
+                        android:background="@drawable/bg_badge_pending"
+                        android:textColor="@color/warn_orange" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/MemberRow" android:paddingHorizontal="12dp">
+                    <LinearLayout style="@style/MemberMeta" android:layout_marginStart="0dp">
+                        <TextView style="@style/MemberName" android:text="지수 · 홀" />
+                        <TextView style="@style/MemberSub" android:text="14:00 출근 (정상)" />
+                    </LinearLayout>
+                    <TextView style="@style/MemberTag" android:text="출근"
+                        android:background="@drawable/bg_badge_approved" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/MemberRow" android:paddingHorizontal="12dp">
+                    <LinearLayout style="@style/MemberMeta" android:layout_marginStart="0dp">
+                        <TextView style="@style/MemberName" android:text="태윤 · 마감" />
+                        <TextView style="@style/MemberSub" android:text="출근 기록 없음" />
+                    </LinearLayout>
+                    <TextView style="@style/MemberTag" android:text="결근"
+                        android:background="@drawable/bg_badge_rejected"
+                        android:textColor="@color/accent_red" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
