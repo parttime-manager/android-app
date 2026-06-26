@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp">
+
+        <!-- header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="인건비"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12월 ▾"
+                android:textColor="@color/brand"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- purple hero -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_today_card"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이번 달 누적"
+                android:textColor="#E9DEFC"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="₩1,420,000"
+                android:textColor="@color/white"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="예산 ₩2.0M · 71% 사용"
+                android:textColor="#E9DEFC"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- 주차별 추이 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="주차별 추이"
+                android:textColor="@color/text_tertiary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:baselineAligned="false">
+
+                <View style="@style/Bar" android:layout_height="50dp" />
+                <View style="@style/Bar" android:layout_height="68dp" />
+                <View style="@style/Bar" android:layout_height="40dp" />
+                <View style="@style/Bar" android:layout_height="62dp"
+                    android:background="@drawable/bg_bar_active" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+                <TextView style="@style/ChartDay" android:text="1주" />
+                <TextView style="@style/ChartDay" android:text="2주" />
+                <TextView style="@style/ChartDay" android:text="3주" />
+                <TextView style="@style/ChartDay" android:text="4주" android:textColor="@color/brand" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 알바별 인건비 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="알바별 인건비"
+            android:textColor="#444444"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="4dp">
+
+            <LinearLayout style="@style/CostRow">
+                <TextView style="@style/CostName" android:text="현우" />
+                <TextView style="@style/CostHours" android:text="52h" />
+                <TextView style="@style/CostAmount" android:text="₩498,000" />
+            </LinearLayout>
+            <View style="@style/DetailDivider" />
+            <LinearLayout style="@style/CostRow">
+                <TextView style="@style/CostName" android:text="민지" />
+                <TextView style="@style/CostHours" android:text="48h" />
+                <TextView style="@style/CostAmount" android:text="₩460,000" />
+            </LinearLayout>
+            <View style="@style/DetailDivider" />
+            <LinearLayout style="@style/CostRow">
+                <TextView style="@style/CostName" android:text="지수" />
+                <TextView style="@style/CostHours" android:text="38h" />
+                <TextView style="@style/CostAmount" android:text="₩364,000" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

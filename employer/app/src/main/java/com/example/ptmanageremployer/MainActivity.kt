@@ -14,8 +14,8 @@ class MainActivity : AppCompatActivity() {
 
     private val home by lazy { HomeFragment() }
     private val schedule by lazy { ScheduleEditFragment() }
-    private val sub by lazy { SubFragment() }
-    private val notice by lazy { NoticeFragment() }
+    private val approval by lazy { SubFragment() }
+    private val stats by lazy { StatsFragment() }
     private val my by lazy { MyFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,8 +36,8 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_home -> show(home)
                 R.id.nav_schedule -> show(schedule)
-                R.id.nav_sub -> show(sub)
-                R.id.nav_notice -> show(notice)
+                R.id.nav_approval -> show(approval)
+                R.id.nav_stats -> show(stats)
                 R.id.nav_my -> show(my)
                 else -> return@setOnItemSelectedListener false
             }

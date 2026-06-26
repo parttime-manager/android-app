@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="지난 주 대비 +8%"
-            android:textColor="@color/brand_blue"
+            android:textColor="@color/brand"
             android:textSize="11sp"
             android:textStyle="bold" />
 
@@ -79,7 +79,7 @@
             <TextView style="@style/ChartDay" android:text="월" />
             <TextView style="@style/ChartDay" android:text="화" />
             <TextView style="@style/ChartDay" android:text="수" />
-            <TextView style="@style/ChartDay" android:text="목" android:textColor="@color/brand_blue" />
+            <TextView style="@style/ChartDay" android:text="목" android:textColor="@color/brand" />
             <TextView style="@style/ChartDay" android:text="금" />
             <TextView style="@style/ChartDay" android:text="토" />
             <TextView style="@style/ChartDay" android:text="일" />

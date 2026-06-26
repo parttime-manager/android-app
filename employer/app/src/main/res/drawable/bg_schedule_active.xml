@@ -3,14 +3,14 @@
     <!-- left accent bar -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/brand_blue" />
+            <solid android:color="@color/brand" />
             <corners android:radius="12dp" />
         </shape>
     </item>
     <!-- body inset to reveal a 3dp accent strip on the left -->
     <item android:left="3dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/brand_blue_bg" />
+            <solid android:color="@color/brand_bg" />
             <corners android:topRightRadius="12dp" android:bottomRightRadius="12dp" />
         </shape>
     </item>
