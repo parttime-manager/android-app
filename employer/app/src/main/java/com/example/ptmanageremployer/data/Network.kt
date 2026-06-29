@@ -1,5 +1,6 @@
 package com.example.ptmanageremployer.data
 
+import com.example.ptmanageremployer.BuildConfig
 import com.google.gson.Gson
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit
  */
 object Network {
 
-    const val BASE_URL = "http://10.0.2.2:8080/"
+    val BASE_URL: String = BuildConfig.BASE_URL
 
     private val authInterceptor = Interceptor { chain ->
         val original = chain.request()

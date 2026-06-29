@@ -33,8 +33,12 @@
 
 ## 백엔드 연동
 - 데이터 계층: `com.example.ptmanageremployer.data` (`Network`·`ApiService`·`TokenStore`·`Dtos`)
-- Base URL: `http://10.0.2.2:8080/` (에뮬레이터 → 호스트 PC의 `localhost`). 평문 HTTP 허용을 위해 `usesCleartextTraffic=true` 설정
-- 실제 기기에서 테스트하려면 [`Network.kt`](app/src/main/java/com/example/ptmanageremployer/data/Network.kt)의 `BASE_URL`을 서버 주소로 교체
+- Base URL은 `local.properties`(버전관리 제외)의 `base.url` 값을 빌드 시 `BuildConfig.BASE_URL`로 주입합니다. 키가 없으면 기본값으로 폴백합니다.
+  ```properties
+  # local.properties
+  base.url=http://10.0.2.2:8080/   # 에뮬레이터 → 호스트 PC의 localhost
+  ```
+  실제 기기/운영에서는 이 값을 서버 주소로 바꾸면 됩니다(소스 수정 불필요). 평문 HTTP 허용을 위해 `usesCleartextTraffic=true` 설정
 - 메신저·FCM 푸시, 스케줄 편성 폼은 미연동 단계입니다(스케줄 탭의 "+" 버튼은 첫 알바를 데모 근무로 편성하는 임시 동작).
 
 ## 빌드 & 실행
