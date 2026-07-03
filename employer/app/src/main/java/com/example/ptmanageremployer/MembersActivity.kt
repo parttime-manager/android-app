@@ -1,5 +1,9 @@
 package com.example.ptmanageremployer
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -36,8 +40,39 @@ class MembersActivity : AppCompatActivity() {
             Toast.makeText(this, "소속 매장이 없습니다.", Toast.LENGTH_SHORT).show()
             return
         }
+        loadInvite()
         loadPending()
         loadMembers()
+    }
+
+    /** 매장 초대코드를 조회해 표시하고 복사/공유 버튼을 연결한다. */
+    private fun loadInvite() {
+        val codeView = findViewById<TextView>(R.id.tv_invite_code)
+        lifecycleScope.launch {
+            val workplace = runCatching { Network.api.getWorkplace(workplaceId) }.getOrNull()
+            val code = workplace?.inviteCode
+            if (code.isNullOrBlank()) {
+                codeView.text = "불러오지 못했어요"
+                return@launch
+            }
+            codeView.text = code
+            findViewById<View>(R.id.btn_copy_invite).setOnClickListener {
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                clipboard.setPrimaryClip(ClipData.newPlainText("초대코드", code))
+                Toast.makeText(this@MembersActivity, "초대코드를 복사했어요", Toast.LENGTH_SHORT).show()
+            }
+            findViewById<View>(R.id.btn_share_invite).setOnClickListener {
+                val share = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        "[${workplace.name ?: "매장"}] 초대코드: $code\n" +
+                            "PTManager 직원 앱에서 이 코드로 매장에 참여하세요.",
+                    )
+                }
+                startActivity(Intent.createChooser(share, "초대코드 공유"))
+            }
+        }
     }
 
     private fun loadPending() {

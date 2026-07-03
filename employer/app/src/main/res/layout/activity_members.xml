@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="멤버 / 승인 관리"
+            android:text="매장 초대 · 멤버 관리"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -46,9 +46,62 @@
             android:paddingTop="8dp"
             android:paddingBottom="24dp">
 
+            <!-- invite code -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="매장 초대코드"
+                android:textColor="@color/text_tertiary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_soft_gray"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:id="@+id/tv_invite_code"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="…"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/btn_copy_invite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="복사"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:background="?attr/selectableItemBackground" />
+
+                <TextView
+                    android:id="@+id/btn_share_invite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="공유"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:background="?attr/selectableItemBackground" />
+            </LinearLayout>
+
             <!-- pending join requests -->
             <TextView
                 android:id="@+id/tv_pending_count"
+                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
