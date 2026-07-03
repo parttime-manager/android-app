@@ -112,12 +112,38 @@ class MembersActivity : AppCompatActivity() {
                     } else {
                         row.findViewById<TextView>(R.id.tv_sub).text = sub
                     }
+                    // 자기 자신은 내보낼 수 없다.
+                    val deleteBtn = row.findViewById<TextView>(R.id.btn_delete)
+                    if (member.id != TokenStore.userId) {
+                        deleteBtn.visibility = View.VISIBLE
+                        deleteBtn.setOnClickListener { promptRemove(member) }
+                    }
                     container.addView(row)
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@MembersActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    /** 멤버를 매장에서 내보낸다. (계정은 유지, 매장 소속만 해제) */
+    private fun promptRemove(member: UserDto) {
+        AlertDialog.Builder(this)
+            .setTitle("멤버 내보내기")
+            .setMessage("${member.name ?: "이 멤버"}님을 매장에서 내보낼까요?")
+            .setPositiveButton("내보내기") { _, _ ->
+                lifecycleScope.launch {
+                    try {
+                        Network.api.removeMember(workplaceId, member.id)
+                        Toast.makeText(this@MembersActivity, "내보냈어요", Toast.LENGTH_SHORT).show()
+                        loadMembers()
+                    } catch (e: Exception) {
+                        Toast.makeText(this@MembersActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton("취소", null)
+            .show()
     }
 
     /** 직원 행을 탭하면 시급을 입력받아 저장한다. (인건비 계산의 기준값) */

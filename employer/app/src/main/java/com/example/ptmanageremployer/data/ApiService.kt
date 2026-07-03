@@ -159,6 +159,12 @@ interface ApiService {
         @Body body: UpdateWageRequest,
     ): UserDto
 
+    @DELETE("api/workplaces/{wid}/members/{uid}")
+    suspend fun removeMember(
+        @Path("wid") wid: Long,
+        @Path("uid") uid: Long,
+    )
+
     // ---- 알림 설정 ----
     @GET("api/users/me/notification-setting")
     suspend fun getNotificationSetting(): NotificationSettingDto

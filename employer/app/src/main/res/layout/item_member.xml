@@ -10,4 +10,14 @@
         <TextView android:id="@+id/tv_name" style="@style/MemberName" android:text="" />
         <TextView android:id="@+id/tv_sub" style="@style/MemberSub" android:text="" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="내보내기"
+        android:textColor="@color/accent_red"
+        android:textSize="12sp"
+        android:visibility="gone" />
 </LinearLayout>
