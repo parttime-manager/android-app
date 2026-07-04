@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shift_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="28dp">
+
+        <TextView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="‹ 뒤로"
+            android:textColor="@color/text_hint"
+            android:textSize="13sp"
+            android:paddingVertical="14dp"
+            android:paddingEnd="14dp"
+            android:background="?attr/selectableItemBackground" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text=""
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text=""
+            android:textColor="@color/brand"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <!-- detail rows -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/DetailRow">
+                <TextView style="@style/DetailKey" android:text="담당 알바" />
+                <TextView android:id="@+id/tv_worker" style="@style/DetailVal" android:text="" />
+            </LinearLayout>
+
+            <View style="@style/DetailDivider" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btn_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_btn_outline"
+            android:text="근무 수정"
+            android:textColor="@color/brand"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingVertical="13dp"
+            android:foreground="?attr/selectableItemBackground" />
+
+        <TextView
+            android:id="@+id/btn_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_btn_outline_gray"
+            android:text="근무 삭제"
+            android:textColor="@color/accent_red"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingVertical="13dp"
+            android:foreground="?attr/selectableItemBackground" />
+    </LinearLayout>
+</ScrollView>

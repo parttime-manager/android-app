@@ -2,7 +2,7 @@
     <string name="app_name">알바 관리 · 사장님</string>
     <string name="nav_home">홈</string>
     <string name="nav_schedule">스케줄</string>
-    <string name="nav_approval">승인</string>
-    <string name="nav_stats">통계</string>
+    <string name="nav_approval">소통</string>
+    <string name="nav_stats">급여</string>
     <string name="nav_my">내 정보</string>
 </resources>

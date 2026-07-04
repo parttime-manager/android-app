@@ -13,6 +13,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="24dp">
 
+        <!-- 제목 + 오늘 이동 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,114 +24,131 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="스케줄 편성"
+                android:text="스케줄"
                 android:textColor="@color/text_primary"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_month"
+                android:id="@+id/btn_this_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:text="오늘"
                 android:textColor="@color/brand"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- week strip (현재 주, 실제 날짜로 표시) -->
+        <!-- 주 이동 -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
-
-            <LinearLayout android:id="@+id/day_cell_0" style="@style/DayCell">
-                <TextView style="@style/DayLabel" android:text="월" />
-                <TextView android:id="@+id/day_num_0" style="@style/DayNum" android:text="" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/day_cell_1" style="@style/DayCell">
-                <TextView style="@style/DayLabel" android:text="화" />
-                <TextView android:id="@+id/day_num_1" style="@style/DayNum" android:text="" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/day_cell_2" style="@style/DayCell">
-                <TextView style="@style/DayLabel" android:text="수" />
-                <TextView android:id="@+id/day_num_2" style="@style/DayNum" android:text="" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/day_cell_3" style="@style/DayCell">
-                <TextView style="@style/DayLabel" android:text="목" />
-                <TextView android:id="@+id/day_num_3" style="@style/DayNum" android:text="" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/day_cell_4" style="@style/DayCell">
-                <TextView style="@style/DayLabel" android:text="금" />
-                <TextView android:id="@+id/day_num_4" style="@style/DayNum" android:text="" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/day_cell_5" style="@style/DayCell">
-                <TextView style="@style/DayLabel" android:text="토" android:textColor="@color/weekend_red" />
-                <TextView android:id="@+id/day_num_5" style="@style/DayNum" android:text="" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/day_cell_6" style="@style/DayCell">
-                <TextView style="@style/DayLabel" android:text="일" android:textColor="@color/weekend_red" />
-                <TextView android:id="@+id/day_num_6" style="@style/DayNum" android:text="" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_selected_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text=""
-            android:textColor="@color/text_tertiary"
-            android:textSize="11sp"
-            android:textStyle="bold" />
-
-        <!-- 선택한 날짜의 근무 목록 (API 로 채움) -->
-        <LinearLayout
-            android:id="@+id/shift_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_shift_empty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:text="이 날짜에 편성된 근무가 없습니다."
-                android:textColor="@color/text_tertiary"
-                android:textSize="12sp"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/btn_add_shift"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_dashed"
-            android:text="+ 시프트 추가"
-            android:textColor="@color/text_tertiary"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingVertical="13dp"
-            android:foreground="?attr/selectableItemBackground" />
-
-        <TextView
-            android:id="@+id/btn_attendance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_btn_outline_gray"
-            android:text="근무별 출근 현황 보기"
-            android:textColor="@color/brand"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingVertical="14dp"
-            android:foreground="?attr/selectableItemBackground" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/btn_prev_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="‹"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_week_range"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btn_next_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="›"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+        <!-- 주간 요약: 총 시간 · 예상 인건비 + 직원별 부하 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_tinted"
+            android:padding="14dp">
+
+            <TextView
+                android:id="@+id/tv_week_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/emp_summary_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+        <!-- 요일별 편성 (코드에서 채움) -->
+        <LinearLayout
+            android:id="@+id/week_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <!-- 하단 액션: 지난 주 복사 / 발행 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btn_copy_week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_btn_outline"
+                android:gravity="center"
+                android:paddingVertical="13dp"
+                android:text="지난 주 복사"
+                android:textColor="@color/brand"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btn_publish"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_primary"
+                android:gravity="center"
+                android:paddingVertical="13dp"
+                android:text="발행"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

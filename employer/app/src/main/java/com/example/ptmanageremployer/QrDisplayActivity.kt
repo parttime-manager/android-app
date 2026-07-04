@@ -3,6 +3,7 @@ package com.example.ptmanageremployer
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -31,6 +32,8 @@ class QrDisplayActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 직원이 스캔하는 동안 화면이 꺼지거나 잠기지 않도록 유지한다. (없으면 QR을 못 스캔함)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val image = ImageView(this)
         val caption = TextView(this).apply {

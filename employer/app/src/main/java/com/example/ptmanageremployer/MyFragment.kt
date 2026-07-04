@@ -15,7 +15,9 @@ import com.example.ptmanageremployer.data.NotificationSettingUpdate
 import com.example.ptmanageremployer.data.Push
 import com.example.ptmanageremployer.data.TokenStore
 import com.example.ptmanageremployer.data.toUserMessage
+import com.example.ptmanageremployer.data.won
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class MyFragment : Fragment() {
     override fun onCreateView(
@@ -26,11 +28,10 @@ class MyFragment : Fragment() {
         view.findViewById<TextView>(R.id.tv_my_name).text = "${TokenStore.name ?: "사장"}님"
         view.findViewById<TextView>(R.id.tv_my_sub).text = TokenStore.email ?: "사장"
 
+        loadStoreSummary(view)
+
         view.findViewById<View>(R.id.row_profile).setOnClickListener {
             startActivity(Intent(requireContext(), ProfileEditActivity::class.java))
-        }
-        view.findViewById<View>(R.id.row_labor).setOnClickListener {
-            startActivity(Intent(requireContext(), LaborCostActivity::class.java))
         }
         view.findViewById<View>(R.id.row_members).setOnClickListener {
             startActivity(Intent(requireContext(), MembersActivity::class.java))
@@ -50,6 +51,33 @@ class MyFragment : Fragment() {
                 i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(i)
             }
+        }
+    }
+
+    /** 이번 주 매장 요약: 이번 주 인건비 · 알바 수 · 이번 주 근무 건수를 채운다. */
+    private fun loadStoreSummary(view: View) {
+        val workplaceId = TokenStore.workplaceId
+        if (workplaceId <= 0) return
+        val today = LocalDate.now()
+        val yearMonth = today.toString().substring(0, 7)
+        val weekIndex = ((today.dayOfMonth - 1) / 7).coerceAtMost(3)
+        val monday = today.minusDays((today.dayOfWeek.value - 1).toLong())
+        val sunday = monday.plusDays(6)
+        lifecycleScope.launch {
+            val cost = runCatching {
+                Network.api.getWeeklyPayroll(workplaceId, yearMonth)
+                    .weeks.firstOrNull { it.week == weekIndex + 1 }?.amount ?: 0L
+            }.getOrDefault(0L)
+            val staff = runCatching {
+                Network.api.getMembers(workplaceId, role = "EMPLOYEE").size
+            }.getOrDefault(0)
+            val shifts = runCatching {
+                Network.api.getShifts(workplaceId, from = monday.toString(), to = sunday.toString()).size
+            }.getOrDefault(0)
+
+            view.findViewById<TextView>(R.id.tv_sum_cost).text = won(cost)
+            view.findViewById<TextView>(R.id.tv_sum_staff).text = "${staff}명"
+            view.findViewById<TextView>(R.id.tv_sum_shifts).text = "${shifts}건"
         }
     }
 

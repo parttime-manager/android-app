@@ -67,82 +67,83 @@
             </FrameLayout>
         </LinearLayout>
 
-        <!-- ===== 2x2 stat grid ===== -->
-        <!-- row 1 -->
+        <!-- ===== 지금 근무 중 (직원 앱 '오늘 근무' 박스와 통일) ===== -->
         <LinearLayout
+            android:id="@+id/card_now_working"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
+            android:orientation="vertical"
+            android:background="@drawable/bg_today_card"
+            android:padding="18dp"
+            android:foreground="?attr/selectableItemBackground">
 
-            <!-- 근무 중 -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="5dp"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="13dp">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="근무 중"
-                    android:textColor="@color/text_tertiary"
+                    android:layout_weight="1"
+                    android:text="지금 근무 중"
+                    android:textColor="@color/brand_border"
                     android:textSize="11sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_working_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text=""
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- 승인 대기 (highlight) -->
-            <LinearLayout
-                android:id="@+id/card_approval"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="5dp"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card_tinted"
-                android:padding="13dp"
-                android:foreground="?attr/selectableItemBackground">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="승인 대기"
-                    android:textColor="@color/brand"
+                    android:text="현황 보기 ›"
+                    android:textColor="@color/white"
                     android:textSize="11sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_approval_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text=""
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_now_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="—"
+                android:textColor="@color/white"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_now_names"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text=""
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="@color/brand_border"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/btn_make_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_btn_white"
+                android:text="스케줄 짜기"
+                android:textColor="@color/brand"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:paddingVertical="12dp"
+                android:foreground="?attr/selectableItemBackground" />
         </LinearLayout>
 
-        <!-- row 2 -->
+        <!-- ===== 인건비 ===== -->
         <LinearLayout
             android:id="@+id/card_labor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="14dp"
             android:orientation="horizontal"
             android:baselineAligned="false"
             android:foreground="?attr/selectableItemBackground">
@@ -206,155 +207,21 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- ===== 지금 근무 중 ===== -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:padding="13dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="지금 근무 중"
-                    android:textColor="#333333"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textColor="@color/accent_green"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_soft_gray"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textColor="#444444"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text=""
-                        android:textColor="@color/text_hint"
-                        android:textSize="9sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="4dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_soft_gray"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textColor="#444444"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text=""
-                        android:textColor="@color/text_hint"
-                        android:textSize="9sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- ===== CTAs ===== -->
+        <!-- ===== 소식: 공지 · 인수인계 · 대타요청 ===== -->
         <TextView
-            android:id="@+id/btn_make_schedule"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/bg_btn_primary"
-            android:text="+ 스케줄 짜기"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingVertical="14dp"
-            android:foreground="?attr/selectableItemBackground" />
+            android:layout_marginTop="20dp"
+            android:text="소식"
+            android:textColor="#444444"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/btn_write_notice"
+        <include
+            android:id="@+id/card_news"
+            layout="@layout/view_home_news"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
-            android:background="@drawable/bg_btn_outline"
-            android:text="공지 작성"
-            android:textColor="@color/brand"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingVertical="13dp"
-            android:foreground="?attr/selectableItemBackground" />
-
-        <TextView
-            android:id="@+id/btn_notice_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
-            android:background="@drawable/bg_btn_outline_gray"
-            android:text="공지 목록 · 조회/삭제"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingVertical="13dp"
-            android:foreground="?attr/selectableItemBackground" />
-
-        <TextView
-            android:id="@+id/btn_handover_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
-            android:background="@drawable/bg_btn_outline_gray"
-            android:text="인수인계 노트"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingVertical="13dp"
-            android:foreground="?attr/selectableItemBackground" />
+            android:layout_marginTop="8dp" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

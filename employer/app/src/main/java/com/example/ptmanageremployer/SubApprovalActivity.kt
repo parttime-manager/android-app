@@ -40,7 +40,7 @@ class SubApprovalActivity : AppCompatActivity() {
             try {
                 val detail = Network.api.getSwapRequest(swapRequestId)
                 applicants = detail.applications.orEmpty()
-                findViewById<TextView>(R.id.tv_req_title).text = "대타 요청 #${detail.id}"
+                findViewById<TextView>(R.id.tv_req_title).text = "대타요청 #${detail.id}"
                 findViewById<TextView>(R.id.tv_shift).text = detail.shift?.let {
                     "${it.workDate ?: ""} ${shiftTimeRange(it.startTime, it.endTime)}"
                 } ?: "근무 정보 없음"
@@ -66,7 +66,7 @@ class SubApprovalActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 Network.api.approveSwap(swapRequestId, ApproveSwapRequest(applicantId))
-                Toast.makeText(this@SubApprovalActivity, "대타 요청을 승인했어요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SubApprovalActivity, "대타요청을 승인했어요", Toast.LENGTH_SHORT).show()
                 finish()
             } catch (e: Exception) {
                 Toast.makeText(this@SubApprovalActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()
@@ -78,7 +78,7 @@ class SubApprovalActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 Network.api.rejectSwap(swapRequestId)
-                Toast.makeText(this@SubApprovalActivity, "대타 요청을 거절했어요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SubApprovalActivity, "대타요청을 거절했어요", Toast.LENGTH_SHORT).show()
                 finish()
             } catch (e: Exception) {
                 Toast.makeText(this@SubApprovalActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()

@@ -16,81 +16,179 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="대타 승인"
+            android:text="소통"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- segmented control -->
+        <!-- ===== 공지 구역 (헤더 = 목록 진입 버튼, 작성은 목록 화면 내부) ===== -->
         <LinearLayout
+            android:id="@+id/btn_notice_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/bg_segment"
-            android:padding="4dp">
+            android:gravity="center_vertical"
+            android:paddingVertical="6dp"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="6dp"
+                android:background="@drawable/bg_circle_notice"
+                android:src="@drawable/ic_megaphone"
+                android:tint="@color/cat_notice"
+                android:contentDescription="공지사항" />
 
             <TextView
-                android:id="@+id/tab_pending"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text=""
+                android:layout_marginStart="8dp"
+                android:text="공지사항"
                 android:textColor="@color/text_primary"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:paddingVertical="10dp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tab_done"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="처리 완료"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:paddingVertical="10dp" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_back"
+                android:scaleX="-1"
+                android:tint="@color/text_tertiary"
+                android:contentDescription="공지 목록 · 작성/조회/삭제" />
         </LinearLayout>
 
-        <!-- ===== pending ===== -->
+        <LinearLayout
+            android:id="@+id/panel_notice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_notice_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:text="등록된 공지가 없습니다."
+                android:textColor="@color/text_tertiary"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- ===== 인수인계 구역 (헤더 = 노트 목록 진입 버튼) ===== -->
+        <LinearLayout
+            android:id="@+id/btn_handover_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="6dp"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="6dp"
+                android:background="@drawable/bg_circle_handover"
+                android:src="@drawable/ic_person"
+                android:tint="@color/cat_handover"
+                android:contentDescription="인수인계" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="인수인계"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_back"
+                android:scaleX="-1"
+                android:tint="@color/text_tertiary"
+                android:contentDescription="인수인계 노트 전체 보기" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/panel_handover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_handover_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:text="등록된 인수인계가 없습니다."
+                android:textColor="@color/text_tertiary"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- ===== 대타요청 구역 (헤더 = 대타 처리 내역 진입 버튼) ===== -->
+        <LinearLayout
+            android:id="@+id/btn_swap_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="6dp"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="6dp"
+                android:background="@drawable/bg_circle_swap"
+                android:src="@drawable/ic_swap"
+                android:tint="@color/cat_swap"
+                android:contentDescription="대타요청" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="대타요청"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_back"
+                android:scaleX="-1"
+                android:tint="@color/text_tertiary"
+                android:contentDescription="대타 처리 내역 보기" />
+        </LinearLayout>
+
+        <!-- ===== 직원의 최근 대타요청(대기 중) ===== -->
         <LinearLayout
             android:id="@+id/panel_pending"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_pending_empty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="승인 대기 중인 대타 요청이 없습니다."
-                android:textColor="@color/text_tertiary"
-                android:textSize="12sp"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <!-- ===== done ===== -->
-        <LinearLayout
-            android:id="@+id/panel_done"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tv_done_empty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:gravity="center"
-                android:text="처리된 대타 요청이 없습니다."
+                android:text="승인 대기 중인 대타요청이 없습니다."
                 android:textColor="@color/text_tertiary"
                 android:textSize="12sp"
                 android:visibility="gone" />

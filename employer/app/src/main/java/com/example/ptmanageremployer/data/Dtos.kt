@@ -82,9 +82,14 @@ data class ShiftDto(
     val checkedInAt: String? = null,
     val checkedOutAt: String? = null,
     val attendanceStatus: String? = null,
+    // 발행 여부. false면 아직 직원에게 공개되지 않은 초안.
+    val published: Boolean = true,
     val createdAt: String? = null,
     val updatedAt: String? = null,
 )
+
+/** POST /api/shifts/publish 응답: 이번에 발행된 근무 수. */
+data class PublishResult(val published: Int = 0)
 
 data class CreateShiftRequest(
     val workplaceId: Long,
@@ -176,6 +181,7 @@ data class HandoverDto(
     val authorId: Long? = null,
     val authorName: String? = null,
     val category: String? = null,
+    val title: String? = null,
     val content: String? = null,
     val createdAt: String? = null,
 )
@@ -183,6 +189,7 @@ data class HandoverDto(
 data class CreateHandoverRequest(
     val workplaceId: Long,
     val category: String,
+    val title: String,
     val content: String,
 )
 

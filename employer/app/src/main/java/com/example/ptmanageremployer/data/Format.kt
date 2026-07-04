@@ -25,6 +25,42 @@ fun shiftTimeRange(start: String?, end: String?): String {
     return if (s.isBlank() && e.isBlank()) "" else "$s – $e"
 }
 
+/** 주 시작(월)~일요일 범위 라벨: "6/30 – 7/6" */
+fun weekRangeLabel(monday: java.time.LocalDate): String {
+    val sunday = monday.plusDays(6)
+    return "${monday.monthValue}/${monday.dayOfMonth} – ${sunday.monthValue}/${sunday.dayOfMonth}"
+}
+
+/** 근무 시간(시). 자정 넘는 야간 교대(end≤start)는 +24h 보정. 파싱 실패 시 0. */
+fun shiftHours(start: String?, end: String?): Double {
+    val s = runCatching { java.time.LocalTime.parse(start) }.getOrNull() ?: return 0.0
+    val e = runCatching { java.time.LocalTime.parse(end) }.getOrNull() ?: return 0.0
+    var mins = java.time.Duration.between(s, e).toMinutes()
+    if (mins <= 0) mins += 24 * 60
+    return mins / 60.0
+}
+
+/** 3.5 → "3.5h", 8.0 → "8h" */
+fun hoursLabel(hours: Double): String =
+    if (hours % 1.0 == 0.0) "${hours.toInt()}h" else "${Math.round(hours * 10) / 10.0}h"
+
+/** ISO 시각(오프셋 유무 모두) → "방금 / N분 전 / N시간 전 / N일 전 / M/d". 파싱 실패 시 "". */
+fun relativeTime(iso: String?): String {
+    val instant = runCatching { java.time.OffsetDateTime.parse(iso).toInstant() }.getOrNull()
+        ?: runCatching {
+            java.time.LocalDateTime.parse(iso).atZone(java.time.ZoneId.systemDefault()).toInstant()
+        }.getOrNull() ?: return ""
+    val mins = java.time.Duration.between(instant, java.time.Instant.now()).toMinutes()
+    return when {
+        mins < 1 -> "방금"
+        mins < 60 -> "${mins}분 전"
+        mins < 60 * 24 -> "${mins / 60}시간 전"
+        mins < 60 * 24 * 7 -> "${mins / (60 * 24)}일 전"
+        else -> java.time.LocalDateTime.ofInstant(instant, java.time.ZoneId.systemDefault())
+            .let { "${it.monthValue}/${it.dayOfMonth}" }
+    }
+}
+
 /** 근태 상태 한글 라벨. */
 fun attendanceLabel(status: String?): String = when (status) {
     "PRESENT" -> "출근"

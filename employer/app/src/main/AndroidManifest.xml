@@ -32,8 +32,11 @@
 
         <activity android:name=".MainActivity" android:exported="false" />
         <activity android:name=".SubApprovalActivity" android:exported="false" />
+        <activity android:name=".SwapDoneActivity" android:exported="false" />
         <activity android:name=".LaborCostActivity" android:exported="false" />
+        <activity android:name=".WageEditActivity" android:exported="false" />
         <activity android:name=".ShiftAttendanceActivity" android:exported="false" />
+        <activity android:name=".ShiftDetailActivity" android:exported="false" />
         <activity android:name=".NoticeDetailActivity" android:exported="false" />
         <activity android:name=".NoticeListActivity" android:exported="false" />
         <activity android:name=".NoticeWriteActivity" android:exported="false" />

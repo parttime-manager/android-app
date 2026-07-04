@@ -40,6 +40,7 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingVertical">13dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
     <style name="CostName">
@@ -141,6 +142,34 @@
         <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">11sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 스케줄 탭: 근무 추가/등록 (점선 버튼) -->
+    <style name="ScheduleAddButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:background">@drawable/bg_dashed</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingVertical">14dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+    </style>
+
+    <!-- 스케줄 탭: 보조 액션 (아웃라인 버튼) -->
+    <style name="ScheduleActionButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:background">@drawable/bg_btn_outline_gray</item>
+        <item name="android:textColor">@color/brand</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingVertical">14dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
     <!-- Weekly summary column -->

@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="내 정보"
             android:textColor="@color/text_primary"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <!-- profile header -->
@@ -86,17 +86,17 @@
                 android:baselineAligned="false">
 
                 <LinearLayout style="@style/SummaryCol">
-                    <TextView style="@style/SummaryNum" android:text="" />
+                    <TextView android:id="@+id/tv_sum_cost" style="@style/SummaryNum" android:text="—" />
                     <TextView style="@style/SummaryLabel" android:text="인건비" />
                 </LinearLayout>
 
                 <LinearLayout style="@style/SummaryCol">
-                    <TextView style="@style/SummaryNum" android:text="" />
+                    <TextView android:id="@+id/tv_sum_staff" style="@style/SummaryNum" android:text="—" />
                     <TextView style="@style/SummaryLabel" android:text="알바" />
                 </LinearLayout>
 
                 <LinearLayout style="@style/SummaryCol">
-                    <TextView style="@style/SummaryNum" android:text="" />
+                    <TextView android:id="@+id/tv_sum_shifts" style="@style/SummaryNum" android:text="—" />
                     <TextView style="@style/SummaryLabel" android:text="근무" />
                 </LinearLayout>
             </LinearLayout>
@@ -113,7 +113,6 @@
             android:showDividers="middle">
 
             <TextView android:id="@+id/row_profile" style="@style/MenuRow" android:text="프로필 수정" />
-            <TextView android:id="@+id/row_labor" style="@style/MenuRow" android:text="인건비 확인" />
             <TextView android:id="@+id/row_members" style="@style/MenuRow" android:text="매장 초대 · 멤버 관리" />
             <TextView android:id="@+id/row_qr" style="@style/MenuRow" android:text="출근 QR 표시" />
             <TextView android:id="@+id/row_noti" style="@style/MenuRow" android:text="알림 설정" />

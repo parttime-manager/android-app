@@ -61,6 +61,7 @@ class NoticeListActivity : AppCompatActivity() {
                 notices.forEach { notice ->
                     val card = inflater.inflate(R.layout.item_notice, container, false)
                     card.findViewById<TextView>(R.id.tv_title).text = notice.title ?: "(제목 없음)"
+                    card.findViewById<TextView>(R.id.tv_content).text = notice.body ?: ""
                     card.findViewById<TextView>(R.id.tv_meta).text = noticeMeta(notice)
                     card.findViewById<View>(R.id.notice_body).setOnClickListener {
                         startActivity(

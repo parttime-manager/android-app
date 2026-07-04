@@ -7,4 +7,12 @@
     <TextView android:id="@+id/tv_name" style="@style/CostName" android:text="" />
     <TextView android:id="@+id/tv_hours" style="@style/CostHours" android:text="" />
     <TextView android:id="@+id/tv_amount" style="@style/CostAmount" android:text="" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="›"
+        android:textColor="@color/text_tertiary"
+        android:textSize="24sp" />
 </LinearLayout>

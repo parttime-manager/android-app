@@ -75,6 +75,13 @@ interface ApiService {
     @POST("api/shifts")
     suspend fun createShift(@Body body: CreateShiftRequest): ShiftDto
 
+    @POST("api/shifts/publish")
+    suspend fun publishShifts(
+        @Query("workplaceId") workplaceId: Long,
+        @Query("from") from: String,
+        @Query("to") to: String,
+    ): PublishResult
+
     @GET("api/shifts/{id}")
     suspend fun getShift(@Path("id") id: Long): ShiftDto
 

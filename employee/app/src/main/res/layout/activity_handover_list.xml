@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="4dp"
-            android:text="인수인계 노트"
+            android:text="인수인계"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
