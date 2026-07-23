@@ -1,23 +1,56 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+# OS
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+._*
+Thumbs.db
+Desktop.ini
 
-# 서명 키 / 시크릿 — 절대 커밋 금지
-*.jks
-*.keystore
-keystore.properties
-google-services.json
+# Editors
+.idea/*
+!.idea/runConfigurations/
+!.idea/runConfigurations.xml
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+.vscode/
+*.swp
+*.swo
+
+# Environment
 .env
 .env.*
 !.env.example
+!.env.sample
+!.env.template
+
+# Logs
+*.log
+logs/
+
+# Gradle / Kotlin
+.gradle/
+.kotlin/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.iml
+*.ipr
+*.iws
+local.properties
+
+# Android
+/captures/
+*.apk
+*.aab
+
+# Signing and services
+*.jks
+*.keystore
+*.pem
+*.der
+keystore.properties
+google-services.json
