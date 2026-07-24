@@ -14,6 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
+import java.net.URI
 import java.util.concurrent.TimeUnit
 
 /**
@@ -26,7 +27,10 @@ object Network {
 
     val BASE_URL: String = BuildConfig.BASE_URL
 
-    /** 저장된 액세스 토큰을 Authorization 헤더로 부착한다. */
+    init {
+        requireSecureBaseUrl(BASE_URL, BuildConfig.DEBUG)
+    }
+
     /**
      * 리프레시 토큰마저 만료돼 세션을 복구할 수 없을 때 호출된다.
      * UI(예: MainActivity)에서 로그인 화면으로 보내도록 설정한다.
@@ -49,7 +53,7 @@ object Network {
     }
 
     private val logging = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
     }
 
     /**
@@ -93,9 +97,9 @@ object Network {
                         return retryWith(response.request, body.accessToken)
                     }
                     // 리프레시 토큰이 '확실히' 무효(본문 있는 400/401)일 때만 로그아웃 확정.
-                    if (renewed != null && (renewed.code() == 401 || renewed.code() == 400)) {
+                    if (renewed != null) {
                         val err = runCatching { renewed.errorBody()?.string() }.getOrNull()
-                        if (!err.isNullOrBlank()) {
+                        if (isDefinitiveRefreshFailure(renewed.code(), err)) {
                             definitiveInvalid = true
                             break
                         }
@@ -123,53 +127,47 @@ object Network {
             .build()
 
     /** 이 응답까지 이어진 응답 체인 길이(재시도 횟수 추적). */
-    private fun responseCount(response: Response): Int {
-        var count = 1
-        var prior = response.priorResponse
-        while (prior != null) {
-            count++
-            prior = prior.priorResponse
-        }
-        return count
-    }
+    private fun responseCount(response: Response): Int =
+        generateSequence(response) { it.priorResponse }.count()
+
+    private fun clientBuilder() = OkHttpClient.Builder()
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
 
     private val client: OkHttpClient by lazy {
-        OkHttpClient.Builder()
+        clientBuilder()
             .addInterceptor(authInterceptor)
             .addInterceptor(logging)
             .authenticator(tokenAuthenticator)
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
             .build()
     }
 
     /** 토큰 갱신 전용 클라이언트: authInterceptor·authenticator 를 적용하지 않는다. */
     private val refreshClient: OkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .build()
+        clientBuilder().addInterceptor(logging).build()
     }
 
-    private val refreshApi: RefreshApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(refreshClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(RefreshApi::class.java)
-    }
-
-    val api: ApiService by lazy {
+    private inline fun <reified T> retrofit(client: OkHttpClient): T =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
+            .create(T::class.java)
+
+    private val refreshApi: RefreshApi by lazy { retrofit(refreshClient) }
+
+    val api: ApiService by lazy { retrofit(client) }
+}
+
+internal fun requireSecureBaseUrl(baseUrl: String, isDebug: Boolean) {
+    require(isDebug || URI(baseUrl).scheme.equals("https", ignoreCase = true)) {
+        "릴리스 빌드는 HTTPS 백엔드만 사용할 수 있습니다. local.properties의 base.url을 확인하세요."
     }
 }
+
+internal fun isDefinitiveRefreshFailure(statusCode: Int, errorBody: String?): Boolean =
+    (statusCode == 400 || statusCode == 401) && !errorBody.isNullOrBlank()
 
 /** 토큰 갱신만 담당하는 최소 API(동기 호출). */
 private interface RefreshApi {
