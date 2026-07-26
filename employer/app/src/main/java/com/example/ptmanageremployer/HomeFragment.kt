@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.ptmanageremployer.data.Network
 import com.example.ptmanageremployer.data.TokenStore
 import com.example.ptmanageremployer.data.relativeTime
-import com.example.ptmanageremployer.data.shiftTimeRange
+import com.example.ptmanageremployer.data.shiftTitle
 import com.example.ptmanageremployer.data.won
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.async
@@ -19,6 +19,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.YearMonth
 
 class HomeFragment : Fragment() {
     override fun onCreateView(
@@ -56,14 +57,14 @@ class HomeFragment : Fragment() {
         val workplaceId = TokenStore.workplaceId
         if (workplaceId <= 0) return
         val today = LocalDate.now().toString()
-        val yearMonth = today.substring(0, 7)
+        val yearMonth = YearMonth.now().toString()
 
         // 서로 의존 없는 대시보드 호출을 병렬 로드한다 → 첫 화면 지연 최소화.
         lifecycleScope.launch {
             listOf(
                 async {
                     runCatching { Network.api.getWorkplace(workplaceId) }.getOrNull()?.let {
-                        view.findViewById<TextView>(R.id.tv_store_name).text = it.name ?: "매장"
+                        view.text(R.id.tv_store_name, it.name ?: "매장")
                     }
                 },
                 // 지금 근무 중 = 오늘 근무 중 시간대가 현재를 포함하는 근무
@@ -71,8 +72,8 @@ class HomeFragment : Fragment() {
                 // 이번 달 인건비
                 async {
                     runCatching { Network.api.getPayroll(workplaceId, yearMonth) }.getOrNull()?.let {
-                        view.findViewById<TextView>(R.id.tv_month_labor).text = won(it.totalAmount)
-                        view.findViewById<TextView>(R.id.tv_today_labor).text = "—"
+                        view.text(R.id.tv_month_labor, won(it.totalAmount))
+                        view.text(R.id.tv_today_labor, "—")
                     }
                 },
                 // 소식 3행
@@ -117,10 +118,9 @@ class HomeFragment : Fragment() {
         val notice = runCatching {
             Network.api.getNotices(workplaceId, size = 1).content.firstOrNull()
         }.getOrNull()
-        view.findViewById<TextView>(R.id.tv_notice_time).text = relativeTime(notice?.createdAt)
-        view.findViewById<TextView>(R.id.tv_notice_title).text =
-            notice?.title ?: "등록된 공지가 없습니다."
-        view.findViewById<TextView>(R.id.tv_notice_body).text = notice?.body ?: ""
+        view.text(R.id.tv_notice_time, relativeTime(notice?.createdAt))
+        view.text(R.id.tv_notice_title, notice?.title ?: "등록된 공지가 없습니다.")
+        view.text(R.id.tv_notice_body, notice?.body)
     }
 
     /** 최신 인수인계 1건의 제목·내용을 표시한다(공지 카드와 동일 형식). */
@@ -128,10 +128,9 @@ class HomeFragment : Fragment() {
         val handover = runCatching {
             Network.api.getHandovers(workplaceId).maxByOrNull { it.createdAt ?: "" }
         }.getOrNull()
-        view.findViewById<TextView>(R.id.tv_handover_time).text = relativeTime(handover?.createdAt)
-        view.findViewById<TextView>(R.id.tv_handover_title).text =
-            handover?.title ?: "등록된 인수인계가 없습니다."
-        view.findViewById<TextView>(R.id.tv_handover_content).text = handover?.content ?: ""
+        view.text(R.id.tv_handover_time, relativeTime(handover?.createdAt))
+        view.text(R.id.tv_handover_title, handover?.title ?: "등록된 인수인계가 없습니다.")
+        view.text(R.id.tv_handover_content, handover?.content)
     }
 
     /** 승인 대기 중인 대타요청 중 가장 최근 1건을 표시한다. */
@@ -139,17 +138,14 @@ class HomeFragment : Fragment() {
         val req = runCatching {
             Network.api.getSwapRequests(workplaceId, view = "pending").maxByOrNull { it.createdAt ?: "" }
         }.getOrNull()
-        view.findViewById<TextView>(R.id.tv_swap_req_time).text = relativeTime(req?.createdAt)
+        view.text(R.id.tv_swap_req_time, relativeTime(req?.createdAt))
         val titleView = view.findViewById<TextView>(R.id.tv_swap_req_title)
         val subView = view.findViewById<TextView>(R.id.tv_swap_req_sub)
         if (req == null) {
             titleView.text = "승인 대기 중인 대타요청이 없습니다."
             subView.text = ""
         } else {
-            val shift = req.shift
-            titleView.text = if (shift != null)
-                "${shift.workDate ?: ""} ${shiftTimeRange(shift.startTime, shift.endTime)}".trim()
-            else "대타요청 #${req.id}"
+            titleView.text = shiftTitle(req)
             subView.text = req.reason ?: "사유 없음"
         }
     }

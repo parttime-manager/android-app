@@ -1,21 +1,16 @@
 package com.example.ptmanageremployer
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.ptmanageremployer.data.Network
 import com.example.ptmanageremployer.data.ShiftDto
 import com.example.ptmanageremployer.data.TokenStore
 import com.example.ptmanageremployer.data.attendanceLabel
 import com.example.ptmanageremployer.data.shiftTimeRange
-import com.example.ptmanageremployer.data.toUserMessage
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class ShiftAttendanceActivity : AppCompatActivity() {
@@ -34,36 +29,26 @@ class ShiftAttendanceActivity : AppCompatActivity() {
         val today = LocalDate.now().toString()
         val container = findViewById<LinearLayout>(R.id.att_container)
         val empty = findViewById<TextView>(R.id.tv_att_empty)
-        findViewById<TextView>(R.id.tv_date).text = "$today · 우리 매장"
+        text(R.id.tv_date, "$today · 우리 매장")
         if (workplaceId <= 0) {
             empty.visibility = View.VISIBLE
             return
         }
-        lifecycleScope.launch {
-            try {
-                val shifts = Network.api.getShifts(workplaceId = workplaceId, from = today, to = today)
-                findViewById<TextView>(R.id.tv_present).text =
-                    shifts.count { it.attendanceStatus == "PRESENT" }.toString()
-                findViewById<TextView>(R.id.tv_late).text =
-                    shifts.count { it.attendanceStatus == "LATE" }.toString()
-                findViewById<TextView>(R.id.tv_absent).text =
-                    shifts.count { it.attendanceStatus == "ABSENT" }.toString()
-                if (shifts.isEmpty()) {
-                    empty.visibility = View.VISIBLE
-                    return@launch
+        launchApi {
+            val shifts = Network.api.getShifts(workplaceId = workplaceId, from = today, to = today)
+            text(R.id.tv_present, shifts.count { it.attendanceStatus == "PRESENT" }.toString())
+            text(R.id.tv_late, shifts.count { it.attendanceStatus == "LATE" }.toString())
+            text(R.id.tv_absent, shifts.count { it.attendanceStatus == "ABSENT" }.toString())
+            if (shifts.isEmpty()) {
+                empty.visibility = View.VISIBLE
+                return@launchApi
+            }
+            shifts.forEach { shift ->
+                container.addItem(R.layout.item_attendance) { row ->
+                    row.text(R.id.tv_name, shift.employeeName ?: "직원 #${shift.employeeId}")
+                    row.text(R.id.tv_sub, subOf(shift))
+                    row.text(R.id.tv_tag, attendanceLabel(shift.attendanceStatus))
                 }
-                val inflater = LayoutInflater.from(this@ShiftAttendanceActivity)
-                shifts.forEach { shift ->
-                    val row = inflater.inflate(R.layout.item_attendance, container, false)
-                    row.findViewById<TextView>(R.id.tv_name).text =
-                        shift.employeeName ?: "직원 #${shift.employeeId}"
-                    row.findViewById<TextView>(R.id.tv_sub).text = subOf(shift)
-                    row.findViewById<TextView>(R.id.tv_tag).text =
-                        attendanceLabel(shift.attendanceStatus)
-                    container.addView(row)
-                }
-            } catch (e: Exception) {
-                Toast.makeText(this@ShiftAttendanceActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -4,15 +4,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.ptmanageremployer.data.Network
 import com.example.ptmanageremployer.data.TokenStore
 import com.example.ptmanageremployer.data.UpdateWageRequest
-import com.example.ptmanageremployer.data.toUserMessage
-import kotlinx.coroutines.launch
 
 /** 직원 시급 설정 화면. 통계 탭의 직원별 인건비 행에서 진입한다. */
 class WageEditActivity : AppCompatActivity() {
@@ -33,27 +29,21 @@ class WageEditActivity : AppCompatActivity() {
         val wage = intent.getIntExtra(EXTRA_HOURLY_WAGE, 0)
         val minutes = intent.getIntExtra(EXTRA_WORKED_MINUTES, 0)
 
-        findViewById<TextView>(R.id.tv_emp_name).text = name
-        findViewById<TextView>(R.id.tv_emp_hours).text = "해당 월 ${minutes / 60}시간 근무"
+        text(R.id.tv_emp_name, name)
+        text(R.id.tv_emp_hours, "해당 월 ${minutes / 60}시간 근무")
         val input = findViewById<EditText>(R.id.input_wage).apply { setText(wage.toString()) }
 
         findViewById<TextView>(R.id.btn_save).setOnClickListener { btn ->
             val value = input.text.toString().toIntOrNull()
             if (value == null || value < 0) {
-                Toast.makeText(this, "올바른 금액을 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                toast("올바른 금액을 입력해 주세요.")
                 return@setOnClickListener
             }
-            btn.isEnabled = false
-            lifecycleScope.launch {
-                try {
-                    Network.api.updateMemberWage(workplaceId, employeeId, UpdateWageRequest(value))
-                    Toast.makeText(this@WageEditActivity, "시급을 저장했어요", Toast.LENGTH_SHORT).show()
-                    setResult(RESULT_OK)
-                    finish()
-                } catch (e: Exception) {
-                    Toast.makeText(this@WageEditActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()
-                    btn.isEnabled = true
-                }
+            launchApi(btn) {
+                Network.api.updateMemberWage(workplaceId, employeeId, UpdateWageRequest(value))
+                toast("시급을 저장했어요")
+                setResult(RESULT_OK)
+                finish()
             }
         }
     }

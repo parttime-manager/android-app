@@ -4,13 +4,11 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -60,7 +58,7 @@ class QrDisplayActivity : AppCompatActivity() {
         val title = TextView(this).apply {
             text = "출근 QR"
             textSize = 22f
-            setTextColor(ContextCompat.getColor(this@QrDisplayActivity, R.color.ink))
+            setTextColor(ContextCompat.getColor(this@QrDisplayActivity, R.color.text_primary))
             setTypeface(typeface, android.graphics.Typeface.BOLD)
             gravity = Gravity.CENTER
         }
@@ -117,18 +115,14 @@ class QrDisplayActivity : AppCompatActivity() {
         // 고정 모드일 때만 뒤로가기를 삼켜 화면을 벗어나지 못하게 한다.
         backGuard = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                Toast.makeText(
-                    this@QrDisplayActivity,
-                    "고정 모드입니다. 잠금 버튼을 길게 눌러 해제하세요.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                toast("고정 모드입니다. 잠금 버튼을 길게 눌러 해제하세요.")
             }
         }
         onBackPressedDispatcher.addCallback(this, backGuard)
 
         val workplaceId = TokenStore.workplaceId
         if (workplaceId <= 0) {
-            Toast.makeText(this, "소속 매장이 없습니다.", Toast.LENGTH_SHORT).show()
+            toast("소속 매장이 없습니다.")
             finish()
             return
         }
@@ -164,7 +158,7 @@ class QrDisplayActivity : AppCompatActivity() {
         setSystemBarsVisible(false)
         lockButton.text = "🔓  길게 눌러 잠금 해제"
         lockButton.applyLockButtonStyle(true, ContextCompat.getColor(this, R.color.brand))
-        Toast.makeText(this, "고정 모드 시작 — 버튼을 길게 누르면 해제됩니다.", Toast.LENGTH_LONG).show()
+        toast("고정 모드 시작 — 버튼을 길게 누르면 해제됩니다.", long = true)
     }
 
     private fun exitLock() {

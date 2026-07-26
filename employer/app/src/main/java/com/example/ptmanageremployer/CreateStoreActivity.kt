@@ -5,15 +5,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.core.view.isVisible
 import com.example.ptmanageremployer.data.CreateWorkplaceRequest
 import com.example.ptmanageremployer.data.Network
 import com.example.ptmanageremployer.data.TokenStore
-import com.example.ptmanageremployer.data.toUserMessage
-import kotlinx.coroutines.launch
 
 class CreateStoreActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,22 +29,16 @@ class CreateStoreActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.btn_create).setOnClickListener { btn ->
             val name = nameInput.text.toString().trim()
             if (name.isEmpty()) {
-                Toast.makeText(this, "매장 이름을 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                toast("매장 이름을 입력해 주세요.")
                 return@setOnClickListener
             }
             val address = typeInput.text.toString().trim().ifBlank { null }
-            btn.isEnabled = false
-            lifecycleScope.launch {
-                try {
-                    val workplace = Network.api.createWorkplace(CreateWorkplaceRequest(name, address))
-                    TokenStore.setWorkplaceId(workplace.id)
-                    codeView.text = workplace.inviteCode ?: "------"
-                    inputState.visibility = View.GONE
-                    codeState.visibility = View.VISIBLE
-                } catch (e: Exception) {
-                    Toast.makeText(this@CreateStoreActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()
-                    btn.isEnabled = true
-                }
+            launchApi(btn) {
+                val workplace = Network.api.createWorkplace(CreateWorkplaceRequest(name, address))
+                TokenStore.setWorkplaceId(workplace.id)
+                codeView.text = workplace.inviteCode ?: "------"
+                inputState.isVisible = false
+                codeState.isVisible = true
             }
         }
         findViewById<View>(R.id.btn_enter_app).setOnClickListener {

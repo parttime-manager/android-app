@@ -1,18 +1,13 @@
 package com.example.ptmanageremployer
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.ptmanageremployer.data.Network
 import com.example.ptmanageremployer.data.NotificationDto
-import com.example.ptmanageremployer.data.toUserMessage
-import kotlinx.coroutines.launch
 
 class NotificationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,25 +23,20 @@ class NotificationActivity : AppCompatActivity() {
     private fun loadNotifications() {
         val container = findViewById<LinearLayout>(R.id.noti_container)
         val empty = findViewById<TextView>(R.id.tv_noti_empty)
-        lifecycleScope.launch {
-            try {
-                val items = Network.api.getNotifications(page = 0, size = 50).content
-                if (items.isEmpty()) {
-                    empty.visibility = View.VISIBLE
-                    return@launch
-                }
-                val inflater = LayoutInflater.from(this@NotificationActivity)
-                items.forEach { noti ->
-                    val row = inflater.inflate(R.layout.item_notification, container, false)
-                    row.findViewById<TextView>(R.id.tv_title).text = titleOf(noti)
-                    row.findViewById<TextView>(R.id.tv_body).text = noti.message ?: ""
-                    row.findViewById<TextView>(R.id.tv_time).text = formatTime(noti.createdAt)
-                    container.addView(row)
-                }
-                runCatching { Network.api.markAllNotificationsRead() }
-            } catch (e: Exception) {
-                Toast.makeText(this@NotificationActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()
+        launchApi {
+            val items = Network.api.getNotifications(page = 0, size = 50).content
+            if (items.isEmpty()) {
+                empty.visibility = View.VISIBLE
+                return@launchApi
             }
+            items.forEach { noti ->
+                container.addItem(R.layout.item_notification) { row ->
+                    row.text(R.id.tv_title, titleOf(noti))
+                    row.text(R.id.tv_body, noti.message)
+                    row.text(R.id.tv_time, formatTime(noti.createdAt))
+                }
+            }
+            runCatching { Network.api.markAllNotificationsRead() }
         }
     }
 

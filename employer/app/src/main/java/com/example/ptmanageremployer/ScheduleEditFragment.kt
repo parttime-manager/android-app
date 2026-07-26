@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -21,9 +20,9 @@ import com.example.ptmanageremployer.data.ShiftDto
 import com.example.ptmanageremployer.data.TokenStore
 import com.example.ptmanageremployer.data.UserDto
 import com.example.ptmanageremployer.data.hoursLabel
+import com.example.ptmanageremployer.data.mondayOf
 import com.example.ptmanageremployer.data.shiftHours
 import com.example.ptmanageremployer.data.shiftTimeRange
-import com.example.ptmanageremployer.data.toUserMessage
 import com.example.ptmanageremployer.data.weekRangeLabel
 import com.example.ptmanageremployer.data.won
 import kotlinx.coroutines.launch
@@ -76,7 +75,7 @@ class ScheduleEditFragment : Fragment() {
     private fun loadWeek() {
         val view = view ?: return
         val sunday = anchorMonday.plusDays(6)
-        view.findViewById<TextView>(R.id.tv_week_range).text = weekRangeLabel(anchorMonday)
+        view.text(R.id.tv_week_range, weekRangeLabel(anchorMonday))
 
         val container = view.findViewById<LinearLayout>(R.id.week_container)
         val summary = view.findViewById<TextView>(R.id.tv_week_summary)
@@ -91,22 +90,18 @@ class ScheduleEditFragment : Fragment() {
             return
         }
 
-        lifecycleScope.launch {
-            try {
-                members = runCatching {
-                    Network.api.getMembers(workplaceId, role = "EMPLOYEE")
-                }.getOrDefault(emptyList())
-                val shifts = Network.api.getShifts(
-                    workplaceId = workplaceId,
-                    from = anchorMonday.toString(),
-                    to = sunday.toString(),
-                )
-                renderWeek(container, shifts)
-                renderSummary(summary, empSummary, shifts)
-                renderPublishButton(publishBtn, shifts)
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.toUserMessage(), Toast.LENGTH_SHORT).show()
-            }
+        launchApi {
+            members = runCatching {
+                Network.api.getMembers(workplaceId, role = "EMPLOYEE")
+            }.getOrDefault(emptyList())
+            val shifts = Network.api.getShifts(
+                workplaceId = workplaceId,
+                from = anchorMonday.toString(),
+                to = sunday.toString(),
+            )
+            renderWeek(container, shifts)
+            renderSummary(summary, empSummary, shifts)
+            renderPublishButton(publishBtn, shifts)
         }
     }
 
@@ -116,41 +111,38 @@ class ScheduleEditFragment : Fragment() {
         val byDate = shifts.groupBy { it.workDate }
         for (i in 0..6) {
             val date = anchorMonday.plusDays(i.toLong())
-            val block = inflater.inflate(R.layout.item_schedule_day, container, false)
-            val title = block.findViewById<TextView>(R.id.tv_day_title)
-            val dow = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
-            title.text = "$dow ${date.monthValue}/${date.dayOfMonth}"
-            title.setTextColor(ContextCompat.getColor(requireContext(), dayTitleColor(date)))
+            container.addItem(R.layout.item_schedule_day) { block ->
+                val title = block.findViewById<TextView>(R.id.tv_day_title)
+                val dow = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
+                title.text = "$dow ${date.monthValue}/${date.dayOfMonth}"
+                title.setTextColor(ContextCompat.getColor(requireContext(), dayTitleColor(date)))
 
-            block.findViewById<View>(R.id.btn_day_add).setOnClickListener { showAddShiftDialog(date) }
+                block.findViewById<View>(R.id.btn_day_add).setOnClickListener { showAddShiftDialog(date) }
 
-            val dayShifts = (byDate[date.toString()] ?: emptyList()).sortedBy { it.startTime }
-            val dayBox = block.findViewById<LinearLayout>(R.id.day_shifts)
-            val empty = block.findViewById<TextView>(R.id.tv_day_empty)
-            if (dayShifts.isEmpty()) {
-                empty.visibility = View.VISIBLE
-            } else {
-                empty.visibility = View.GONE
-                var dayHours = 0.0
-                var dayCost = 0L
-                dayShifts.forEach { shift ->
-                    dayBox.addView(buildShiftRow(inflater, dayBox, shift))
-                    dayHours += shiftHours(shift.startTime, shift.endTime)
-                    dayCost += costOf(shift)
+                val dayShifts = (byDate[date.toString()] ?: emptyList()).sortedBy { it.startTime }
+                val dayBox = block.findViewById<LinearLayout>(R.id.day_shifts)
+                val empty = block.findViewById<TextView>(R.id.tv_day_empty)
+                if (dayShifts.isEmpty()) {
+                    empty.visibility = View.VISIBLE
+                } else {
+                    empty.visibility = View.GONE
+                    var dayHours = 0.0
+                    var dayCost = 0L
+                    dayShifts.forEach { shift ->
+                        dayBox.addView(buildShiftRow(inflater, dayBox, shift))
+                        dayHours += shiftHours(shift.startTime, shift.endTime)
+                        dayCost += costOf(shift)
+                    }
+                    block.text(R.id.tv_day_meta, "${hoursLabel(dayHours)} · ${won(dayCost)}")
                 }
-                block.findViewById<TextView>(R.id.tv_day_meta).text =
-                    "${hoursLabel(dayHours)} · ${won(dayCost)}"
             }
-            container.addView(block)
         }
     }
 
     private fun buildShiftRow(inflater: LayoutInflater, parent: ViewGroup, shift: ShiftDto): View {
         val row = inflater.inflate(R.layout.item_shift_edit, parent, false)
-        row.findViewById<TextView>(R.id.tv_time).text =
-            shiftTimeRange(shift.startTime, shift.endTime)
-        row.findViewById<TextView>(R.id.tv_worker).text =
-            shift.employeeName ?: "직원 #${shift.employeeId}"
+        row.text(R.id.tv_time, shiftTimeRange(shift.startTime, shift.endTime))
+        row.text(R.id.tv_worker, shift.employeeName ?: "직원 #${shift.employeeId}")
 
         // 초안/예정/출근을 배지로 구분. 초안은 카드도 흐리게.
         val checkedIn = shift.checkedInAt != null
@@ -217,11 +209,11 @@ class ScheduleEditFragment : Fragment() {
     private fun showAddShiftDialog(date: LocalDate) {
         val workplaceId = TokenStore.workplaceId
         if (workplaceId <= 0) {
-            Toast.makeText(requireContext(), "소속 매장이 없습니다.", Toast.LENGTH_SHORT).show()
+            toast("소속 매장이 없습니다.")
             return
         }
         if (members.isEmpty()) {
-            Toast.makeText(requireContext(), "편성할 알바가 없습니다.", Toast.LENGTH_SHORT).show()
+            toast("편성할 알바가 없습니다.")
             return
         }
         val names = members.map { it.name ?: "직원 #${it.id}" }.toTypedArray()
@@ -274,36 +266,27 @@ class ScheduleEditFragment : Fragment() {
         workplaceId: Long, date: LocalDate, employeeId: Long, employeeName: String,
         start: String, end: String,
     ) {
-        lifecycleScope.launch {
-            try {
-                Network.api.createShift(
-                    CreateShiftRequest(
-                        workplaceId = workplaceId,
-                        employeeId = employeeId,
-                        workDate = date.toString(),
-                        startTime = start,
-                        endTime = end,
-                    )
+        launchApi {
+            Network.api.createShift(
+                CreateShiftRequest(
+                    workplaceId = workplaceId,
+                    employeeId = employeeId,
+                    workDate = date.toString(),
+                    startTime = start,
+                    endTime = end,
                 )
-                Toast.makeText(
-                    requireContext(),
-                    "${employeeName}님 근무를 편성했어요 (${start.take(5)}–${end.take(5)})",
-                    Toast.LENGTH_SHORT,
-                ).show()
-                loadWeek()
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.toUserMessage(), Toast.LENGTH_SHORT).show()
-            }
+            )
+            toast("${employeeName}님 근무를 편성했어요 (${start.take(5)}–${end.take(5)})")
+            loadWeek()
         }
     }
 
     private fun confirmCopyLastWeek() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("지난 주 복사")
-            .setMessage("전주(${weekRangeLabel(anchorMonday.minusDays(7))}) 편성을 이번 주로 복사할까요? 복사본은 초안으로 추가됩니다.")
-            .setPositiveButton("복사") { _, _ -> copyLastWeek() }
-            .setNegativeButton("취소", null)
-            .show()
+        requireContext().confirm(
+            "지난 주 복사",
+            "전주(${weekRangeLabel(anchorMonday.minusDays(7))}) 편성을 이번 주로 복사할까요? 복사본은 초안으로 추가됩니다.",
+            "복사",
+        ) { copyLastWeek() }
     }
 
     private fun copyLastWeek() {
@@ -319,7 +302,7 @@ class ScheduleEditFragment : Fragment() {
                 )
             }.getOrNull()
             if (source.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), "복사할 지난 주 편성이 없습니다.", Toast.LENGTH_SHORT).show()
+                toast("복사할 지난 주 편성이 없습니다.")
                 return@launch
             }
             var copied = 0
@@ -343,7 +326,7 @@ class ScheduleEditFragment : Fragment() {
                 }
             }
             val msg = if (skipped > 0) "${copied}건 복사 (${skipped}건 건너뜀)" else "${copied}건 복사했어요"
-            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+            toast(msg)
             loadWeek()
         }
     }
@@ -351,19 +334,15 @@ class ScheduleEditFragment : Fragment() {
     private fun publishWeek() {
         val workplaceId = TokenStore.workplaceId
         if (workplaceId <= 0) return
-        lifecycleScope.launch {
-            try {
-                val result = Network.api.publishShifts(
-                    workplaceId = workplaceId,
-                    from = anchorMonday.toString(),
-                    to = anchorMonday.plusDays(6).toString(),
-                )
-                val msg = if (result.published > 0) "${result.published}건 발행했어요" else "발행할 초안이 없습니다."
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                loadWeek()
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.toUserMessage(), Toast.LENGTH_SHORT).show()
-            }
+        launchApi {
+            val result = Network.api.publishShifts(
+                workplaceId = workplaceId,
+                from = anchorMonday.toString(),
+                to = anchorMonday.plusDays(6).toString(),
+            )
+            val msg = if (result.published > 0) "${result.published}건 발행했어요" else "발행할 초안이 없습니다."
+            toast(msg)
+            loadWeek()
         }
     }
 
@@ -373,11 +352,8 @@ class ScheduleEditFragment : Fragment() {
     }
 
     private fun dayTitleColor(date: LocalDate): Int = when (date.dayOfWeek) {
-        DayOfWeek.SATURDAY -> R.color.weekend_blue
-        DayOfWeek.SUNDAY -> R.color.weekend_red
+        DayOfWeek.SATURDAY -> R.color.text_secondary
+        DayOfWeek.SUNDAY -> R.color.accent_red
         else -> R.color.text_primary
     }
-
-    private fun mondayOf(date: LocalDate): LocalDate =
-        date.minusDays((date.dayOfWeek.value - DayOfWeek.MONDAY.value).toLong())
 }

@@ -17,6 +17,7 @@ import com.example.ptmanageremployer.data.Network
 import com.example.ptmanageremployer.data.PayrollItem
 import com.example.ptmanageremployer.data.TokenStore
 import com.example.ptmanageremployer.data.WeeklyCost
+import com.example.ptmanageremployer.data.weekBucketIndex
 import com.example.ptmanageremployer.data.won
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -51,14 +52,14 @@ class StatsFragment : Fragment() {
 
     private fun loadStats(view: View) {
         val yearMonth = selected.toString() // 예: 2026-07
-        view.findViewById<TextView>(R.id.tv_month_selector).text = "${selected.monthValue}월 ▾"
-        view.findViewById<TextView>(R.id.tv_month_label).text = "$yearMonth 실근태 기준"
+        view.text(R.id.tv_month_selector, "${selected.monthValue}월 ▾")
+        view.text(R.id.tv_month_label, "$yearMonth 실근태 기준")
 
         val workplaceId = TokenStore.workplaceId
         if (workplaceId <= 0) return
 
         // 현재 월일 때만 이번 주를 강조한다. 지난 달은 강조 없음(-1).
-        val activeWeek = if (selected == YearMonth.now()) currentWeekIndex(LocalDate.now()) else -1
+        val activeWeek = if (selected == YearMonth.now()) weekBucketIndex(LocalDate.now()) else -1
         loadPayroll(view, workplaceId, yearMonth)
         loadWeekly(view, workplaceId, yearMonth, activeWeek)
     }
@@ -83,26 +84,22 @@ class StatsFragment : Fragment() {
         lifecycleScope.launch {
             val payroll = runCatching { Network.api.getPayroll(workplaceId, yearMonth) }.getOrNull()
                 ?: return@launch
-            view.findViewById<TextView>(R.id.tv_month_total).text = won(payroll.totalAmount)
+            view.text(R.id.tv_month_total, won(payroll.totalAmount))
 
             // 플레이스홀더/이전 결과 제거 후 실제 항목으로 채운다. (empty 뷰는 유지)
-            for (i in container.childCount - 1 downTo 0) {
-                if (container.getChildAt(i).id != R.id.tv_cost_empty) container.removeViewAt(i)
-            }
+            container.removeAllExcept(R.id.tv_cost_empty)
             if (payroll.items.isEmpty()) {
                 empty.visibility = View.VISIBLE
                 return@launch
             }
             empty.visibility = View.GONE
-            val inflater = LayoutInflater.from(requireContext())
             payroll.items.forEach { item ->
-                val row = inflater.inflate(R.layout.item_cost_row, container, false)
-                row.findViewById<TextView>(R.id.tv_name).text =
-                    item.employeeName ?: "직원 #${item.employeeId}"
-                row.findViewById<TextView>(R.id.tv_hours).text = "${(item.workedMinutes ?: 0) / 60}h"
-                row.findViewById<TextView>(R.id.tv_amount).text = won(item.amount ?: 0)
-                if (item.employeeId != null) row.setOnClickListener { openWageEdit(item) }
-                container.addView(row)
+                container.addItem(R.layout.item_cost_row) { row ->
+                    row.text(R.id.tv_name, item.employeeName ?: "직원 #${item.employeeId}")
+                    row.text(R.id.tv_hours, "${(item.workedMinutes ?: 0) / 60}h")
+                    row.text(R.id.tv_amount, won(item.amount ?: 0))
+                    if (item.employeeId != null) row.setOnClickListener { openWageEdit(item) }
+                }
             }
         }
     }
@@ -140,14 +137,10 @@ class StatsFragment : Fragment() {
             val active = i == activeWeek
             bar.setBackgroundResource(if (active) R.drawable.bg_bar_active else R.drawable.bg_bar)
             view.findViewById<TextView>(weekLabelIds[i]).setTextColor(
-                ContextCompat.getColor(requireContext(), if (active) R.color.brand else R.color.text_hint),
+                ContextCompat.getColor(requireContext(), if (active) R.color.brand else R.color.text_tertiary),
             )
         }
     }
-
-    /** 백엔드와 동일한 버킷: 1–7→0, 8–14→1, 15–21→2, 22–말일→3 */
-    private fun currentWeekIndex(date: LocalDate): Int =
-        ((date.dayOfMonth - 1) / 7).coerceAtMost(3)
 
     companion object {
         private const val MIN_BAR_DP = 6f

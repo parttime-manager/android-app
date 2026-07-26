@@ -3,8 +3,6 @@ package com.example.ptmanageremployer
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +13,6 @@ import com.example.ptmanageremployer.data.ShiftDto
 import com.example.ptmanageremployer.data.TokenStore
 import com.example.ptmanageremployer.data.UpdateShiftRequest
 import com.example.ptmanageremployer.data.shiftTimeRange
-import com.example.ptmanageremployer.data.toUserMessage
 import kotlinx.coroutines.launch
 
 /** 근무 상세 화면. 근무를 수정(담당 알바·시간)하거나 삭제한다. (사장 앱) */
@@ -40,38 +37,23 @@ class ShiftDetailActivity : AppCompatActivity() {
     }
 
     private fun loadShift() {
-        lifecycleScope.launch {
-            try {
-                val s = Network.api.getShift(shiftId).also { shift = it }
-                findViewById<TextView>(R.id.tv_date).text = s.workDate ?: ""
-                findViewById<TextView>(R.id.tv_time).text = shiftTimeRange(s.startTime, s.endTime)
-                findViewById<TextView>(R.id.tv_worker).text =
-                    s.employeeName ?: "직원 #${s.employeeId}"
-            } catch (e: Exception) {
-                Toast.makeText(this@ShiftDetailActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()
-            }
+        launchApi {
+            val s = Network.api.getShift(shiftId).also { shift = it }
+            text(R.id.tv_date, s.workDate)
+            text(R.id.tv_time, shiftTimeRange(s.startTime, s.endTime))
+            text(R.id.tv_worker, s.employeeName ?: "직원 #${s.employeeId}")
         }
     }
 
     private fun confirmDelete() {
         val s = shift ?: return
-        AlertDialog.Builder(this)
-            .setTitle("근무 삭제")
-            .setMessage("${s.employeeName ?: "직원"}님의 ${shiftTimeRange(s.startTime, s.endTime)} 근무를 삭제할까요?")
-            .setPositiveButton("삭제") { _, _ ->
-                lifecycleScope.launch {
-                    runCatching { Network.api.deleteShift(shiftId) }
-                        .onSuccess {
-                            Toast.makeText(this@ShiftDetailActivity, "근무를 삭제했어요", Toast.LENGTH_SHORT).show()
-                            finish()
-                        }
-                        .onFailure {
-                            Toast.makeText(this@ShiftDetailActivity, it.toUserMessage(), Toast.LENGTH_SHORT).show()
-                        }
-                }
+        confirm("근무 삭제", "${s.employeeName ?: "직원"}님의 ${shiftTimeRange(s.startTime, s.endTime)} 근무를 삭제할까요?", "삭제") {
+            launchApi {
+                Network.api.deleteShift(shiftId)
+                toast("근무를 삭제했어요")
+                finish()
             }
-            .setNegativeButton("취소", null)
-            .show()
+        }
     }
 
     /** 근무 수정: 배정 알바 변경(선택) → 시작/종료 시간 변경 → PATCH /api/shifts/{id}. */
@@ -84,7 +66,7 @@ class ShiftDetailActivity : AppCompatActivity() {
                 Network.api.getMembers(workplaceId, role = "EMPLOYEE")
             }.getOrNull()
             if (members.isNullOrEmpty()) {
-                Toast.makeText(this@ShiftDetailActivity, "편성할 알바가 없습니다.", Toast.LENGTH_SHORT).show()
+                toast("편성할 알바가 없습니다.")
                 return@launch
             }
             val names = members.map { it.name ?: "직원 #${it.id}" }.toTypedArray()
@@ -108,22 +90,18 @@ class ShiftDetailActivity : AppCompatActivity() {
             TimePickerDialog(this, { _, endH, endM ->
                 val start = String.format("%02d:%02d:00", startH, startM)
                 val end = String.format("%02d:%02d:00", endH, endM)
-                lifecycleScope.launch {
-                    try {
-                        Network.api.updateShift(
-                            shiftId,
-                            UpdateShiftRequest(
-                                employeeId = employeeId,
-                                workDate = s.workDate,
-                                startTime = start,
-                                endTime = end,
-                            ),
-                        )
-                        Toast.makeText(this@ShiftDetailActivity, "근무를 수정했어요", Toast.LENGTH_SHORT).show()
-                        loadShift()
-                    } catch (e: Exception) {
-                        Toast.makeText(this@ShiftDetailActivity, e.toUserMessage(), Toast.LENGTH_SHORT).show()
-                    }
+                launchApi {
+                    Network.api.updateShift(
+                        shiftId,
+                        UpdateShiftRequest(
+                            employeeId = employeeId,
+                            workDate = s.workDate,
+                            startTime = start,
+                            endTime = end,
+                        ),
+                    )
+                    toast("근무를 수정했어요")
+                    loadShift()
                 }
             }, eh, em, true).apply { setTitle("종료 시간") }.show()
         }, sh, sm, true).apply { setTitle("시작 시간") }.show()

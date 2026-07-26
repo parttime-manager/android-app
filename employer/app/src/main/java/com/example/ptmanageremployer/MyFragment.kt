@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -14,10 +12,12 @@ import com.example.ptmanageremployer.data.Network
 import com.example.ptmanageremployer.data.NotificationSettingUpdate
 import com.example.ptmanageremployer.data.Push
 import com.example.ptmanageremployer.data.TokenStore
-import com.example.ptmanageremployer.data.toUserMessage
+import com.example.ptmanageremployer.data.mondayOf
+import com.example.ptmanageremployer.data.weekBucketIndex
 import com.example.ptmanageremployer.data.won
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.YearMonth
 
 class MyFragment : Fragment() {
     override fun onCreateView(
@@ -25,8 +25,8 @@ class MyFragment : Fragment() {
     ): View = inflater.inflate(R.layout.fragment_my, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<TextView>(R.id.tv_my_name).text = "${TokenStore.name ?: "사장"}님"
-        view.findViewById<TextView>(R.id.tv_my_sub).text = TokenStore.email ?: "사장"
+        view.text(R.id.tv_my_name, "${TokenStore.name ?: "사장"}님")
+        view.text(R.id.tv_my_sub, TokenStore.email ?: "사장")
 
         loadStoreSummary(view)
 
@@ -59,14 +59,14 @@ class MyFragment : Fragment() {
         val workplaceId = TokenStore.workplaceId
         if (workplaceId <= 0) return
         val today = LocalDate.now()
-        val yearMonth = today.toString().substring(0, 7)
-        val weekIndex = ((today.dayOfMonth - 1) / 7).coerceAtMost(3)
-        val monday = today.minusDays((today.dayOfWeek.value - 1).toLong())
+        val yearMonth = YearMonth.from(today).toString()
+        val thisWeek = weekBucketIndex(today) + 1
+        val monday = mondayOf(today)
         val sunday = monday.plusDays(6)
         lifecycleScope.launch {
             val cost = runCatching {
                 Network.api.getWeeklyPayroll(workplaceId, yearMonth)
-                    .weeks.firstOrNull { it.week == weekIndex + 1 }?.amount ?: 0L
+                    .weeks.firstOrNull { it.week == thisWeek }?.amount ?: 0L
             }.getOrDefault(0L)
             val staff = runCatching {
                 Network.api.getMembers(workplaceId, role = "EMPLOYEE").size
@@ -75,9 +75,9 @@ class MyFragment : Fragment() {
                 Network.api.getShifts(workplaceId, from = monday.toString(), to = sunday.toString()).size
             }.getOrDefault(0)
 
-            view.findViewById<TextView>(R.id.tv_sum_cost).text = won(cost)
-            view.findViewById<TextView>(R.id.tv_sum_staff).text = "${staff}명"
-            view.findViewById<TextView>(R.id.tv_sum_shifts).text = "${shifts}건"
+            view.text(R.id.tv_sum_cost, won(cost))
+            view.text(R.id.tv_sum_staff, "${staff}명")
+            view.text(R.id.tv_sum_shifts, "${shifts}건")
         }
     }
 
@@ -86,7 +86,7 @@ class MyFragment : Fragment() {
         lifecycleScope.launch {
             val s = runCatching { Network.api.getNotificationSetting() }.getOrNull()
             if (s == null) {
-                Toast.makeText(requireContext(), "알림 설정을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
+                toast("알림 설정을 불러오지 못했습니다.")
                 return@launch
             }
             val labels = arrayOf("대타 알림", "공지 알림", "출퇴근 알림", "가입 신청 알림")
@@ -97,16 +97,11 @@ class MyFragment : Fragment() {
                 .setTitle("알림 설정")
                 .setMultiChoiceItems(labels, checked) { _, which, isChecked -> checked[which] = isChecked }
                 .setPositiveButton("저장") { _, _ ->
-                    lifecycleScope.launch {
-                        runCatching {
-                            Network.api.updateNotificationSetting(
-                                NotificationSettingUpdate(checked[0], checked[1], checked[2], checked[3]),
-                            )
-                        }.onSuccess {
-                            Toast.makeText(requireContext(), "알림 설정을 저장했어요", Toast.LENGTH_SHORT).show()
-                        }.onFailure {
-                            Toast.makeText(requireContext(), it.toUserMessage(), Toast.LENGTH_SHORT).show()
-                        }
+                    launchApi {
+                        Network.api.updateNotificationSetting(
+                            NotificationSettingUpdate(checked[0], checked[1], checked[2], checked[3]),
+                        )
+                        toast("알림 설정을 저장했어요")
                     }
                 }
                 .setNegativeButton("취소", null)
