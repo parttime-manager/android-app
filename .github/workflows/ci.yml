@@ -1,0 +1,70 @@
+name: Android CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [employee, employer]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Block committed credentials
+        shell: bash
+        run: |
+          if git ls-files | grep -E '(^|/)(local\.properties|google-services\.json|.*\.(jks|keystore))$'; then
+            echo "Local configuration, credentials and signing keys must not be committed."
+            exit 1
+          fi
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - run: sdkmanager "platforms;android-36.1" "build-tools;36.0.0"
+      - name: Build, test and lint
+        run: ./gradlew :${{ matrix.app }}:assembleDebug :${{ matrix.app }}:testDebugUnitTest :${{ matrix.app }}:lintDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-debug-apk
+          path: ${{ matrix.app }}/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+      - name: Restore release configuration
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          BASE_URL: ${{ vars.BASE_URL }}
+        run: |
+          test -n "$KEYSTORE_BASE64" || { echo "KEYSTORE_BASE64 is required for release"; exit 1; }
+          case "$BASE_URL" in
+            https://*/) ;;
+            *) echo "BASE_URL must be an HTTPS URL ending in /"; exit 1 ;;
+          esac
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          printf 'base.url=%s\n' "$BASE_URL" > local.properties
+      - name: Build signed release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew :${{ matrix.app }}:assembleRelease
+      - uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          name: ${{ matrix.app }}-release-apk
+          path: ${{ matrix.app }}/build/outputs/apk/release/*.apk
+          if-no-files-found: error

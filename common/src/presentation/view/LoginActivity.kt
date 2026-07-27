@@ -1,0 +1,83 @@
+package com.example.ptmanagercommon.presentation.view
+
+import com.example.ptmanagercommon.*
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.example.ptmanagercommon.domain.model.LoginRequest
+import com.example.ptmanagercommon.domain.model.SignupRequest
+import com.example.ptmanagercommon.domain.model.TokenResponse
+import com.example.ptmanagercommon.data.TokenStore
+
+class LoginActivity : AppCompatActivity() {
+
+    private var signupMode = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupScreen(R.layout.activity_login, R.id.login_root)
+
+        val nameLabel = findViewById<View>(R.id.label_name)
+        val nameInput = findViewById<EditText>(R.id.input_name)
+        val emailInput = findViewById<EditText>(R.id.input_email)
+        val passwordInput = findViewById<EditText>(R.id.input_password)
+        val primaryBtn = findViewById<TextView>(R.id.btn_request_code)
+        val signupBtn = findViewById<TextView>(R.id.btn_signup)
+
+        signupBtn.setOnClickListener {
+            signupMode = !signupMode
+            nameLabel.isVisible = signupMode
+            nameInput.isVisible = signupMode
+            primaryBtn.text = if (signupMode) "회원가입" else "로그인"
+            signupBtn.text = if (signupMode) "로그인으로 돌아가기" else "이메일로 회원가입"
+        }
+
+        primaryBtn.setOnClickListener {
+            val email = emailInput.text.toString().trim()
+            val password = passwordInput.text.toString()
+            if (email.isEmpty() || password.isEmpty()) {
+                toast("이메일과 비밀번호를 입력해 주세요.")
+                return@setOnClickListener
+            }
+            if (signupMode) {
+                val name = nameInput.text.toString().trim()
+                if (name.isEmpty()) {
+                    toast("이름을 입력해 주세요.")
+                    return@setOnClickListener
+                }
+                if (password.length < 8) {
+                    toast("비밀번호는 8자 이상이어야 합니다.")
+                    return@setOnClickListener
+                }
+                authenticate(primaryBtn) {
+                    screenModel.signup(SignupRequest(email, password, name, role = BuildConfig.APP_ROLE))
+                }
+            } else {
+                authenticate(primaryBtn) { screenModel.login(LoginRequest(email, password)) }
+            }
+        }
+
+        findViewById<TextView>(R.id.btn_store).setOnClickListener {
+            startActivity(Intent(this, storeActivity))
+        }
+    }
+
+    /** 로그인/회원가입 공통: 성공하면 세션을 저장하고 다음 화면으로 보낸다. */
+    private fun authenticate(btn: TextView, request: suspend () -> TokenResponse) {
+        launchApi(btn) {
+            TokenStore.saveSession(request())
+            routeAfterAuth()
+        }
+    }
+
+    /** 매장 소속이면 메인으로, 아니면 매장 가입 화면으로 보낸다. */
+    private fun routeAfterAuth() {
+        val next = if (TokenStore.workplaceId > 0) MainActivity::class.java else storeActivity
+        startActivity(Intent(this, next))
+        finish()
+    }
+}

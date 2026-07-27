@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 사장 앱의 고정 보라색 브랜드 팔레트.
+         틴트 4종은 직원 앱 파랑 램프와 같은 명도/채도를 보라 색상(hue 255)에 옮긴 값 —
+         두 앱 화면 밀도가 같게 보이도록. 토큰 이름은 두 앱이 동일하고 값만 다르다. -->
+    <color name="brand">#7048E8</color>
+    <color name="brand_bg">#F8F5FF</color>
+    <color name="brand_light">#F1EDFD</color>
+    <color name="brand_chip">#EFEAFE</color>
+    <color name="brand_border">#E7DEFC</color>
+    <!-- 브랜드 색 카드 위에 올라가는 보조 텍스트 (brand 대비 4.66:1). -->
+    <color name="on_brand_secondary">#EEE8FF</color>
+
+    <!-- 텍스트 램프: 16.83 / 9.12 / 5.07 (모두 흰 배경 기준, AA 통과). -->
+    <color name="text_primary">#191F28</color>
+    <color name="text_secondary">#333D4B</color>
+    <color name="text_tertiary">#596579</color>
+
+    <color name="border">#FFD8DFE7</color>
+    <color name="divider">#E7ECF2</color>
+
+    <!-- 경고색은 전부 텍스트/숫자용이라 AA 통과하는 진한 앰버로 (5.02:1). -->
+    <color name="warn_orange">#B45309</color>
+    <color name="warn_bg">#FFF8EE</color>
+    <color name="warn_border">#FFE3B8</color>
+    <color name="warn_border_dashed">#FFD591</color>
+
+    <color name="accent_green">#147A38</color>
+    <!-- 5.04:1. 기존 #E03131 은 4.51:1 로 AA 경계에 걸쳐 있었다. -->
+    <color name="accent_red">#D42A2A</color>
+    <color name="surface_gray">#F2F4F6</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <!-- 소식 카테고리 색 (두 앱 공통 값). -->
+    <color name="cat_notice">#0066CC</color>
+    <color name="cat_notice_bg">#EAF2FE</color>
+    <color name="cat_handover">#147A38</color>
+    <color name="cat_handover_bg">#E7F6EC</color>
+    <color name="cat_swap">#B45309</color>
+    <color name="cat_swap_bg">#FEF3E2</color>
+    <color name="neu_highlight">#FFFFFFFF</color>
+    <color name="neu_shadow">#FFEBEEF2</color>
+    <color name="neu_shadow_strong">#FFE1E6EC</color>
+</resources>

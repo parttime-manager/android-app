@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">알바 관리 · 사장님</string>
+    <string name="nav_home">홈</string>
+    <string name="nav_schedule">스케줄</string>
+    <string name="nav_approval">소통</string>
+    <string name="nav_stats">급여</string>
+    <string name="nav_my">내 정보</string>
+    <string name="store_action">새 매장 만들기</string>
+    <string name="profile_role_label">역할</string>
+</resources>

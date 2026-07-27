@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Opaque relief: small offsets keep the edge subtle at every density. -->
+    <dimen name="relief_offset_x">1dp</dimen>
+    <dimen name="relief_offset_y">2dp</dimen>
+    <dimen name="relief_inset">0.5dp</dimen>
+    <dimen name="relief_inset_bottom">1dp</dimen>
+    <dimen name="surface_elevation">1dp</dimen>
+    <dimen name="bottom_nav_height">72dp</dimen>
+    <dimen name="bottom_nav_margin_horizontal">16dp</dimen>
+    <dimen name="bottom_nav_margin_bottom">8dp</dimen>
+    <dimen name="bottom_nav_radius">32dp</dimen>
+    <dimen name="bottom_nav_item_padding">8dp</dimen>
+    <dimen name="radius_sm">18dp</dimen>
+    <dimen name="radius_lg">28dp</dimen>
+</resources>

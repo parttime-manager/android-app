@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="false"
+        android:theme="@style/Theme.PTManagerEmployee"
+        tools:targetApi="31">
+
+        <activity
+            android:name=".presentation.view.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".presentation.view.LoginActivity" android:exported="false" />
+        <activity android:name=".presentation.view.JoinStoreActivity" android:exported="false" />
+
+        <activity android:name=".presentation.view.MainActivity" android:exported="false" />
+        <activity android:name=".presentation.view.CheckInActivity" android:exported="false" />
+        <activity android:name=".presentation.view.ShiftDetailActivity" android:exported="false" />
+        <activity android:name=".presentation.view.SubRequestActivity" android:exported="false" />
+        <activity android:name=".presentation.view.SwapListActivity" android:exported="false" />
+        <activity android:name=".presentation.view.SwapDetailActivity" android:exported="false" />
+        <activity android:name=".presentation.view.NoticeDetailActivity" android:exported="false" />
+        <activity android:name=".presentation.view.NoticeListActivity" android:exported="false" />
+        <activity android:name=".presentation.view.HandoverListActivity" android:exported="false" />
+        <activity android:name=".presentation.view.HandoverWriteActivity" android:exported="false" />
+        <activity android:name=".presentation.view.HandoverDetailActivity" android:exported="false" />
+        <activity android:name=".presentation.view.NotificationActivity" android:exported="false" />
+        <activity android:name=".presentation.view.ProfileEditActivity" android:exported="false" />
+        <activity android:name=".presentation.view.MembersActivity" android:exported="false" />
+
+        <!-- FCM 푸시 수신 서비스 -->
+        <service
+            android:name=".PtmMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="ptm_default" />
+    </application>
+
+</manifest>
