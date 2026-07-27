@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- The wireframe is a light-only design; keep night identical to light. -->
+    <style name="Base.Theme.PTManagerEmployee" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/brand</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- 하단 탭 선택 알약(active indicator) 색 — 기본 M3 보라 대신 브랜드 블루 계열로 -->
+        <item name="colorSecondaryContainer">@color/brand_chip</item>
+        <item name="colorOnSecondaryContainer">@color/brand</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:colorBackground">@color/surface_gray</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+    </style>
+</resources>

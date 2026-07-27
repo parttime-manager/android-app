@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shift_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface_gray"
+    android:fillViewport="true"
+    tools:ignore="HardcodedText">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/screen_margin"
+        android:paddingBottom="28dp">
+        <include layout="@layout/view_shift_toolbar" />
+
+        <include layout="@layout/view_shift_summary" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:paddingHorizontal="18dp">
+            <LinearLayout style="@style/DetailRow" android:minHeight="60dp">
+                <TextView style="@style/DetailKey" android:text="근무지" />
+
+                <TextView
+                    android:id="@+id/tv_workplace"
+                    style="@style/DetailVal"
+                    android:text="-"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <View style="@style/DetailDivider" />
+
+            <LinearLayout style="@style/DetailRow" android:minHeight="60dp">
+                <TextView style="@style/DetailKey" android:text="포지션" />
+
+                <TextView
+                    android:id="@+id/tv_position"
+                    style="@style/DetailVal"
+                    android:text="미지정"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <View style="@style/DetailDivider" />
+
+            <LinearLayout style="@style/DetailRow" android:minHeight="60dp">
+                <TextView style="@style/DetailKey" android:text="함께 근무" />
+
+                <TextView
+                    android:id="@+id/tv_coworkers"
+                    style="@style/DetailVal"
+                    android:text="-"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <View style="@style/DetailDivider" />
+
+            <LinearLayout style="@style/DetailRow" android:minHeight="60dp">
+                <TextView style="@style/DetailKey" android:text="예상 급여" />
+
+                <TextView android:id="@+id/tv_pay" style="@style/DetailVal" android:text="-" android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:text="근무 변경이 필요하면 대타요청을 보낼 수 있어요."
+            android:textColor="@color/text_tertiary"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/btn_sub_request"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:text="대타요청하기"
+            style="@style/ActionPrimary" />
+    </LinearLayout>
+</ScrollView>
