@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:gravity="center"
+    android:background="@color/brand_bg" android:padding="24dp">
+
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:orientation="vertical" android:gravity="center_horizontal"
+        android:paddingLeft="24dp" android:paddingTop="28dp"
+        android:paddingRight="24dp" android:paddingBottom="24dp"
+        android:background="@drawable/bg_qr_card" android:elevation="3dp">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="출근 QR" android:textSize="22sp" android:textStyle="bold"
+            android:textColor="@color/text_primary" android:gravity="center" />
+
+        <ImageView android:id="@+id/qr_image"
+            android:layout_width="220dp" android:layout_height="220dp"
+            android:layout_marginTop="20dp" android:background="@android:color/white"
+            android:contentDescription="직원 출퇴근 확인용 QR 코드" />
+
+        <TextView android:id="@+id/qr_caption"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="18dp" android:text="출근 QR 불러오는 중…"
+            android:textSize="14sp" android:textColor="@color/text_secondary" android:gravity="center" />
+    </LinearLayout>
+
+    <TextView android:id="@+id/btn_lock"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginTop="28dp" android:paddingHorizontal="24dp" android:paddingVertical="14dp"
+        android:text="🔒  공기계 고정 모드" android:textSize="15sp" android:gravity="center" />
+</LinearLayout>
