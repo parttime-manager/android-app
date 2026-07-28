@@ -1,0 +1,86 @@
+import java.util.Properties
+
+if (file('google-services.json').exists()) {
+    apply plugin: 'com.google.gms.google-services'
+}
+
+def localProperties = new Properties()
+def propertiesFile = rootProject.file('local.properties')
+if (propertiesFile.exists()) propertiesFile.withInputStream { localProperties.load(it) }
+def appPropertiesFile = project.file('local.properties')
+if (appPropertiesFile.exists()) appPropertiesFile.withInputStream { localProperties.load(it) }
+def signingValue = { key, env -> localProperties.getProperty(key) ?: System.getenv(env) }
+def keystorePath = signingValue('keystore.path', 'KEYSTORE_PATH')
+def appNamespace = android.namespace
+def commonDir = project.ext.ptmCommonDir
+
+android {
+    compileSdk = 36
+    compileSdkMinor = 1
+    defaultConfig {
+        applicationId = appNamespace
+        minSdk = 29
+        targetSdk = 36
+        versionCode = 1
+        versionName = '1.0'
+        testInstrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
+        buildConfigField 'String', 'BASE_URL', '"' + (localProperties.getProperty('base.url') ?: 'http://10.0.2.2:8080/') + '"'
+        buildConfigField 'String', 'APP_ROLE', '"' + (appNamespace.endsWith('employee') ? 'EMPLOYEE' : 'EMPLOYER') + '"'
+    }
+    buildFeatures { buildConfig = true }
+    signingConfigs {
+        if (keystorePath != null) {
+            release {
+                storeFile = file(keystorePath)
+                storePassword = signingValue('keystore.password', 'KEYSTORE_PASSWORD')
+                keyAlias = signingValue('key.alias', 'KEY_ALIAS')
+                keyPassword = signingValue('key.password', 'KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.findByName('release')
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+
+def catalog = extensions.getByType(VersionCatalogsExtension).named('libs')
+dependencies {
+    ['androidx-activity-ktx', 'androidx-appcompat', 'androidx-constraintlayout', 'androidx-core-ktx',
+     'material', 'androidx-lifecycle-viewmodel-ktx', 'androidx-lifecycle-runtime-ktx', 'kotlinx-coroutines-android', 'retrofit',
+     'retrofit-converter-gson', 'okhttp-logging', 'zxing-android-embedded', 'firebase-messaging',
+     'androidx-security-crypto'].each { implementation catalog.findLibrary(it).get() }
+    implementation platform(catalog.findLibrary('firebase-bom').get())
+    testImplementation catalog.findLibrary('junit').get()
+    androidTestImplementation catalog.findLibrary('androidx-espresso-core').get()
+    androidTestImplementation catalog.findLibrary('androidx-junit').get()
+}
+
+// Keep the existing app packages, R classes and manifest names. Only the common source package changes.
+def commonSources = tasks.register('generateCommonSources', Sync) {
+    from(new File(commonDir, 'src')) { into 'main' }
+    from(new File(commonDir, 'test')) { into 'test' }
+    from(new File(commonDir, 'androidTest')) { into 'androidTest' }
+    into layout.buildDirectory.dir('generated/ptmCommon')
+    inputs.property('namespace', appNamespace)
+    filteringCharset = 'UTF-8'
+    filter { String line -> line.replace('com.example.ptmanagercommon', appNamespace) }
+}
+android.sourceSets.main {
+    kotlin.srcDir(layout.buildDirectory.dir('generated/ptmCommon/main').get().asFile)
+    res.srcDir(new File(commonDir, 'res'))
+}
+tasks.named('preBuild') { dependsOn commonSources }
+
+tasks.configureEach { if (name.startsWith('compile')) dependsOn commonSources }
+
+android.sourceSets.test.kotlin.srcDir(layout.buildDirectory.dir('generated/ptmCommon/test').get().asFile)
+
+android.sourceSets.androidTest.kotlin.srcDir(layout.buildDirectory.dir('generated/ptmCommon/androidTest').get().asFile)

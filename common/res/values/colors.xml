@@ -1,0 +1,5 @@
+<resources>
+    <color name="bottom_nav_surface_top">#FFFFFFFF</color>
+    <color name="bottom_nav_surface_bottom">#FFF9FAFC</color>
+    <color name="bottom_nav_edge">#FFFFFFFF</color>
+</resources>

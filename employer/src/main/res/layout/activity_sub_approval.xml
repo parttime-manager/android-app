@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/approval_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/surface_gray">
+    <LinearLayout style="@style/ScreenToolbar">
+        <ImageView android:id="@+id/btn_back" style="@style/ScreenBack" />
+
+        <TextView style="@style/ToolbarTitle" android:text="대타요청 상세" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+        <include layout="@layout/view_swap_detail_content" />
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottom_actions"
+        style="@style/FloatingActionBar">
+        <TextView
+            android:id="@+id/btn_reject"
+            style="@style/FloatingActionSecondary"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="거절" />
+
+        <TextView
+            android:id="@+id/btn_approve"
+            style="@style/FloatingActionPrimary"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_marginStart="@dimen/bottom_nav_item_padding"
+            android:text="승인하기" />
+    </LinearLayout>
+</LinearLayout>
